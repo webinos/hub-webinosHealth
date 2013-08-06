@@ -110,7 +110,7 @@ function retrieveData(index, sensorType) {
     var rndDay = Math.floor(Math.random()*28)+1;
     var rndVal = Math.floor(Math.random()*20)+20;
     var incDay, incVal;
-    for(var i=0; i<10; i++) {
+    for(var i=0; i<30; i++) {
         incDay = Math.floor(Math.random()*7)+1;
         incVal = Math.floor(Math.random()*5)-2;
         rndDay += incDay;

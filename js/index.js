@@ -1,3 +1,4 @@
+
 var myBabyCount = 0;
 var otherBabyCount = 0;
 var momInfo = null;
@@ -20,11 +21,16 @@ var babyList = new Array();    //Midwife
 var mybabyList = new Array();    //Mom
 
 
-$(document).ready(function() {
-/*
- * Request user to choose profile category in the option list:   0-mom; 1-mybaby; 2-midwife
- * Once profile is selected, left column updated as per profile
- */
+try {
+    google.load('visualization', '1', {'packages': ['corechart'], 'callback': gl});
+}
+catch(e) {
+    alert('google load error: '+e.message);
+    gl();
+}
+
+
+function gl() {
     init();
     addProfileTab();
     addListener();
@@ -33,7 +39,7 @@ $(document).ready(function() {
         $('#dialog-container').fadeOut();
     });
 
-});
+}
 
 
 function init() {
@@ -117,12 +123,12 @@ function addBabyTab(tabName, isMine, babyId) {
     if(isMine) {
         tabId = 'myBaby'+myBabyCount+'Tab';
         myBabyCount ++;
-        console.log('myBabyCount:', myBabyCount);
+        //console.log('myBabyCount:', myBabyCount);
     }
     else {
         tabId = 'otherBaby'+otherBabyCount+'Tab';
         otherBabyCount ++;
-        console.log('otherBabyCount:', otherBabyCount);
+        //console.log('otherBabyCount:', otherBabyCount);
         
     }
     var tabLinkName = tabId+'Link';
@@ -487,6 +493,7 @@ function launchPage(){
         //Retrieve my baby list
         getMyBabies(function(res) {
             mybabyList = res;
+            myBabyCount = 0;
             //Constructs tabList for mom profile
             initMomInfo();
         });
@@ -495,13 +502,16 @@ function launchPage(){
         //Retrieve midwife's baby list
         getOtherBabies(function(res) {
             babyList = res;
+            otherBabyCount = 0;
+/*
             if(babyList.length > 0) {
-                //console.log('babyList.length', babyList.length); 
+                alert('babyList.length: '+babyList.length); 
                 for (var i = 0; i <  babyList.length; i++) {
                     //console.log('baby name:', babyList[i].name);
                     addBabyTab(babyList[i].name, false, i);
                 }
             }
+*/
             //Constructs tabList for midwife profile
             addMidwifeTabs();
 
