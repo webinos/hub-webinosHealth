@@ -34,10 +34,12 @@ function graphHandler() {
         if(type == 0) {
             htmlCode += '<br>Div for showing graph with mom blood pressure';
             this.description = 'mom blood pressure';
+            this.serviceUri = 'http://webinos.org/api/sensors.bloodpressure';
         }
         else if(type == 1) {
             htmlCode += '<br>Div for showing graph with mom blood sugar';
             this.description = 'mom blood sugar';
+            this.serviceUri = 'http://webinos.org/api/sensors.bloodsugar';
         }
         else if(type == 2) {
             htmlCode += '<br>Div for showing graph with mom heartrate';
@@ -52,6 +54,7 @@ function graphHandler() {
         else if(type == 10) {
             htmlCode += '<br>Div for showing graph with baby weight';
             this.description = 'baby weight';
+            this.serviceUri = 'http://webinos.org/api/sensors.weightscale';
         }
         else if(type == 11) {
             htmlCode += '<br>Div for showing graph with baby temperature';
@@ -70,10 +73,12 @@ function graphHandler() {
         })(this.mainDiv, this);
         (function(mDiv, rf) {
             $('#'+mDiv+'AcquireButton').click(function() {
-                rf.selectSensor();
+                //rf.selectSensor();
+                rf.dataAcquisition();
             });
         })(this.mainDiv, this);
 
+/*
         if(this.serviceUri) {
             //alert('findService for index '+index+' and uri '+this.serviceUri);
             webinos.discovery.findServices(
@@ -84,9 +89,53 @@ function graphHandler() {
                 }
             });
         }
+//*/
     }
 
 
+    graphHandler.prototype.dataAcquisition = function () {
+        var htmlCode = '';
+        //htmlCode += 'Sorry, no sensors available...';
+        $('#dialog-content').html(htmlCode);
+        $('#dialog-container').fadeIn(1000);
+        webinos.dashboard
+            .open({
+                module: 'explorer',
+                data: { service: this.serviceUri }
+            }, function(){ } )
+            .onAction(function (data) {
+                //alert(JSON.stringify(data));
+                selectServiceStatic(data.result, ref);
+            });
+    }
+
+
+    graphHandler.prototype.selectService = function (data) {
+        //alert('selectService: '+JSON.stringify(data));
+        $('#dialog-content').html('data acquisition...');
+        (function(dt, rf) {
+        webinos.discovery.findServices(
+            new ServiceType(dt.api),
+            { onFound: function(service){
+                if ((service.id === dt.id) && (service.address === dt.serviceAddress)) {
+                    rf.sensors4Choice = new Array();
+                    rf.sensors4Choice[0] = service;
+                    rf.sensorSelected = 0;
+
+                    service.bind({
+                        onBind: function(){
+                            getNewSensorData(rf);
+                        }
+                    });
+
+                }
+            }
+        });
+        })(data, this);
+ 
+    }
+
+/*
     graphHandler.prototype.selectSensor = function () {
         //alert('selectSensor for index '+this.index+', type '+this.sensorType);
         var htmlCode = '';
@@ -108,6 +157,7 @@ function graphHandler() {
                 $('#'+mDiv+'Select').change(function() {
                     rf.sensorSelected = +($('#'+rf.mainDiv+'Select').val());
                     //alert('sensor selected: '+rf.sensors4Choice[rf.sensorSelected].description);
+                    alert('sensor selected: '+JSON.stringify(rf.sensors4Choice[rf.sensorSelected]));
                     rf.sensors4Choice[rf.sensorSelected].bind({
                         onBind: function(){
                             //rf.getNewData();
@@ -119,7 +169,7 @@ function graphHandler() {
         }
         $('#dialog-container').fadeIn(1000);
     }
-
+*/
 
     graphHandler.prototype.saveData = function(event) {
         //alert('saveData - '+this.sensors4Choice[this.sensorSelected].description);
@@ -232,5 +282,11 @@ function isValidDate(d) {
     }
     return (!isNaN(d.getTime()));
 }
+
+
+function selectServiceStatic(data, ref) {
+    ref.selectService(data);
+}
+
 
 
