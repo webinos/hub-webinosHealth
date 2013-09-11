@@ -30,41 +30,41 @@ function graphHandler() {
         this.index = index;
         this.sensorType = type;
         this.availableSensors = new Array();
-        var htmlCode = '';
+        var htmlCode = '<br><table>';
         if(type == 0) {
-            htmlCode += '<br>Div for showing graph with mom blood pressure';
+            htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
             this.description = 'mom blood pressure';
             this.serviceUri = 'http://webinos.org/api/sensors.bloodpressure';
         }
         else if(type == 1) {
-            htmlCode += '<br>Div for showing graph with mom blood sugar';
+            htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
             this.description = 'mom blood sugar';
             this.serviceUri = 'http://webinos.org/api/sensors.bloodsugar';
         }
         else if(type == 2) {
-            htmlCode += '<br>Div for showing graph with mom heartrate';
+            htmlCode += '<tr><td>Div for showing graph with mom heartrate</td></tr>';
             this.description = 'mom heartrate';
             this.serviceUri = 'http://webinos.org/api/sensors.heartratemonitor';
         }
         else if(type == 3) {
-            htmlCode += '<br>Div for showing graph with mom temperature';
+            htmlCode += '<tr><td>Div for showing graph with mom temperature</td></tr>';
             this.description = 'mom temperature';
             this.serviceUri = 'http://webinos.org/api/sensors.temperature';
         }
         else if(type == 10) {
-            htmlCode += '<br>Div for showing graph with baby weight';
+            htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
             this.description = 'baby weight';
             this.serviceUri = 'http://webinos.org/api/sensors.weightscale';
         }
         else if(type == 11) {
-            htmlCode += '<br>Div for showing graph with baby temperature';
+            htmlCode += '<tr><td>Div for showing graph with baby temperature</td></tr>';
             this.description = 'baby temperature';
             this.serviceUri = 'http://webinos.org/api/sensors.temperature';
         }
-        htmlCode += '<br><br>';
-        htmlCode += '<input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'>';
-        htmlCode += '<br><br>';
-        htmlCode += '<input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'>';
+        //htmlCode += '<br><br>';
+        htmlCode += '<tr><td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td></tr>';
+        //htmlCode += '<br><br>';
+        htmlCode += '<tr><td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td></tr>';
         $('#'+this.mainDiv).html(htmlCode);
         (function(mDiv, rf) {
             $('#'+mDiv+'ShowButton').click(function() {

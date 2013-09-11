@@ -6,6 +6,9 @@ body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 13px;
     color:#333
+    background-image: radial-gradient(#444,#000);
+    background: radial-gradient(#444,#000);
+    /*padding: 0 170px;*/
 }
 
 p {
@@ -24,11 +27,12 @@ p {
 }
 
 #header {
-    height: 75px;
-    background: #FF6633;
+    height: 55px;
+    background: #3F3F3F;
     border-radius: 10px;
-    border: 1px solid #eb521f;
+    border: 1px solid #456;
     margin: 5px;
+    color: #D0D0D0
 }
 
 #contentwrap {
@@ -38,10 +42,12 @@ p {
 }
 
 #content {
-    background: #FFFFFF;
+    background: url('../assets/webinosBgDarkGrayGlow.png') 50% 50% no-repeat;
+    background-size: auto 90%;
     border-radius: 10px;
-    border: 1px solid #ebebeb;
+    border: 1px solid #456;
     margin: 5px;
+    color: #D0D0D0
 }
 
 #leftcolumnwrap {
@@ -51,10 +57,11 @@ p {
 }
 
 #leftcolumn {
-    background: #FFFFFF;
+    background: #3F3F3F;
     border-radius: 10px;
-    border: 1px solid #1fb8eb;
+    border: 1px solid #456;
     margin: 5px;
+    color: #D0D0D0
 }
 
 #rightcolumnwrap {
@@ -64,11 +71,12 @@ p {
 }
 
 #rightcolumn {
-    background: #FFFFFF;
+    background: #3F3F3F;
     border-radius: 10px;
-    border: 1px solid #b81feb;
+    border: 1px solid #456;
     margin: 5px;
     padding-left: 5px;
+    color: #D0D0D0
 }
 
 #footerwrap {
@@ -80,10 +88,11 @@ p {
 
 #footer {
     height: 40px;
-    background: #33FF66;
+    background: #3F3F3F;
     border-radius: 10px;
-    border: 1px solid #1feb52;
+    border: 1px solid #456;
     margin: 5px;
+    color: #D0D0D0
 }
 
 
@@ -131,7 +140,8 @@ th {
     position: absolute;
     width: 400px;
     height: 400px;
-    background: #fff;
+    background: #E8E8E8;
+    color: #202020;
     left: 50%;
     top: 50%;
     border-radius: 10px;
@@ -144,8 +154,8 @@ th {
 
 #close {
     position: absolute;
-    background: #adff00;
-    color: #000;
+    background: #5F5F5F;
+    color: #D0D0D0;
     right: -1em;
     top: -1em;
     border-radius: 50%;
@@ -166,32 +176,52 @@ th {
 
 /* css for left tabs */
 .buttonTab {
-    background: #adff00;
-    color: #000000;
+    background: #D0D0D0;
+    color: #202020;
+    cursor: pointer;
 }
 
 .buttonTabSelected {
-    background: #ad3500;
-    color: #FFFFFF;
+    background: #202020;
+    color: #D0D0D0;
 }
 
 
 /* css for inner tabs */
 .buttonInnerTab {
-    background: #adff00;
-    color: #000000;
+    background: #D0D0D0;
+    color: #202020;
+    cursor: pointer;
 }
 
 .buttonInnerTabSelected {
-    background: #ad3500;
-    color: #FFFFFF;
+    background: #202020;
+    color: #D0D0D0;
 }
 
 
 /* css for generic buttons */
 .buttonGeneric {
-    background: #adff00;
-    color: #000000;
+    background: #D0D0D0;
+    color: #202020;
+    cursor: pointer;
 }
 
+
+/* css for profile selector */
+.selectClass {
+    background: #D0D0D0;
+    color: #202020;
+}
+
+
+/* css for tables */
+
+table {
+}
+
+td {
+    padding-top: 3px;
+    padding-left: 10px;
+}
 

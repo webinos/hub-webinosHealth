@@ -104,7 +104,6 @@ function saveMyBaby() {
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
-    $('#addMyBaby').html('');
     var babyInfo = {};
     babyInfo.name = babyName;
     babyInfo.surname = babySurname;
@@ -165,7 +164,9 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
     htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
     htmlCode += '<br><br>';
-    htmlCode += '<input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'><br>';
+    htmlCode += '<table>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
+    htmlCode += '</table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
     $('#'+tabId).hide();
@@ -201,7 +202,6 @@ function addBabyTab(tabName, isMine, babyId) {
     for(var i=0; i<babyInnerTabList.length; i++) {
         htmlCode = '';
         htmlCode += '<div id=\''+babyTabIds[i].tabId+'\'>';
-        htmlCode += 'Showing baby '+babyInnerTabList[i].displayName;
         htmlCode += '<div id=\''+babyTabIds[i].tabId+'Graph\'>';
         htmlCode += '</div>';
         htmlCode += '</div>';
@@ -237,7 +237,7 @@ function addBabyTab(tabName, isMine, babyId) {
 
 function refreshTabLinks() {
     //alert('refreshTabLinks - 01');
-    $('#leftcolumn').html('');
+    $('#leftcolumn').html('<table>');
     var prevType = tabList[0].type;
     for(var i=0; i<tabList.length; i++) {
         var tabId = tabList[i].tabId;
@@ -245,23 +245,24 @@ function refreshTabLinks() {
         var htmlCode = '';
         if(prevType != tabList[i].type) {
             if(prevType == 0) {
-                htmlCode += '<br>My babies<br>';
+                htmlCode += '<tr><td>My babies</td></tr>';
             }
             else if(prevType == 2) {
-                htmlCode += '<br>Babies<br>';
+                htmlCode += '<tr><td>Babies</td></tr>';
             }
             else {
-                htmlCode += '<br><br>';
+                htmlCode += '<tr><td></td></tr>';
             }
             prevType = tabList[i].type;
         }
-        htmlCode += '<input type=\'button\' value=\''+tabList[i].displayName+'\' id=\''+link+'\' class=\'buttonTab\'><br>';
+        htmlCode += '<tr><td><input type=\'button\' value=\''+tabList[i].displayName+'\' id=\''+link+'\' class=\'buttonTab\'></td></tr>';
         $('#leftcolumn').append(htmlCode);
         (function(ln, tn) {
             //$('#'+ln).click(function() {displayTab(tn)});
             $('#'+ln).click(function() {displayTab(tn, tabList, 'buttonTabSelected', 'buttonTab')});
         })(link, tabId);
     }
+    $('#leftcolumn').append('</table>');
 }
 
 
@@ -286,7 +287,7 @@ function addProfileTab() {
     htmlCode += '</tr>';
     htmlCode += '<tr>';
     htmlCode += '<td>';
-    htmlCode += '<select id=\'profile\'>';
+    htmlCode += '<select id=\'profile\' class=\'selectClass\'>';
     htmlCode += '<option value=\'Profile\'>';
     htmlCode += 'Choose Your Profile';
     htmlCode += '</option>';
@@ -389,6 +390,7 @@ function addMomTabs() {
     var age = getAge(momInfo.birthdate);
     var htmlCode = '';
     htmlCode += '<div id=\'momTab\'>';
+    htmlCode += '<br>';
     htmlCode += '<table>';
     htmlCode += '<tr><td>My name</td><td>'+momInfo.name+'</td></tr>';
     htmlCode += '<tr><td>My surname</td><td>'+momInfo.surname+'</td></tr>';
@@ -401,11 +403,10 @@ function addMomTabs() {
     htmlCode += '<div id=\'momInnerGraphs\'>';
     htmlCode += '</div>';
     htmlCode += '<br><br>';
-    htmlCode += '<input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBaby()\'>';
-    htmlCode += '<div id=\'addMyBaby\'>';
-    htmlCode += '</div>';
-    htmlCode += '<br><br>';
-    htmlCode += '<input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'>';
+    htmlCode += '<table>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBaby()\'></td>';
+    htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
+    htmlCode += '</table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
 
@@ -433,7 +434,6 @@ function addMomTabs() {
         var tabId = momInnerTabList[i].tabId;
         htmlCode = '';
         htmlCode += '<div id=\''+momInnerTabList[i].tabId+'\'>';
-        htmlCode += 'Showing mom '+momInnerTabList[i].displayName;
         htmlCode += '<div id=\''+momInnerTabList[i].tabId+'Graph\'>';
         htmlCode += '</div>';
         htmlCode += '</div>';
