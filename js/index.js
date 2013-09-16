@@ -87,20 +87,21 @@ function getOtherBabies(cbk) {
 }
 
 
-function addMyBaby() {
+function addMyBabyInfo(index) {
     var htmlCode = '';
     htmlCode += '<br><br>Add my new baby<br>';
     htmlCode += 'Name: <input type=\'text\' id=\'myBabyName\'><br>';
     htmlCode += 'Surname: <input type=\'text\' id=\'myBabySurname\'><br>';
     //TODO the input type date is supported by Chrome but not by Firefox
     htmlCode += 'Birthdate: <input type=\'date\' id=\'myBabyDate\'><br>';
-    htmlCode += '<input type=\'button\' value=\'Save\' onclick=\'saveMyBaby()\'>';
+    htmlCode += '<input type=\'button\' value=\'Save\' onclick=\'saveMyBaby('+index+')\'>';
     $('#dialog-content').html(htmlCode);
     $('#dialog-container').fadeIn(1000);
 }
 
 
-function saveMyBaby() {
+function saveMyBaby(index) {
+    //alert('saveMyBaby: index is '+index);
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
@@ -108,11 +109,24 @@ function saveMyBaby() {
     babyInfo.name = babyName;
     babyInfo.surname = babySurname;
     babyInfo.birthdate = new Date(babyDate);
-    mybabyList.push(babyInfo);
-    $('#dialog-container').fadeOut();
-    addBabyTab(babyInfo.name, true, mybabyList.length-1);
-    refreshTabLinks();
-    displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
+    if(index == -1) {
+        mybabyList.push(babyInfo);
+        $('#dialog-container').fadeOut();
+        addBabyTab(babyInfo.name, true, mybabyList.length-1);
+        refreshTabLinks();
+        displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
+    }
+    else {
+        mybabyList[index].name = babyInfo.name;
+        mybabyList[index].surname = babyInfo.surname;
+        mybabyList[index].birthdate = babyInfo.birthdate;
+        //removeTab(tabList[index+1].tabId);
+        $('#dialog-container').fadeOut();
+        tabList[index+1].displayName = babyInfo.name;
+        updateBabyTab(babyInfo.name, true, index);
+        refreshTabLinks();
+        displayTab(tabList[index+1].tabId, tabList, 'buttonTabSelected', 'buttonTab');
+    }
 }
 
 
@@ -135,10 +149,11 @@ function addBabyTab(tabName, isMine, babyId) {
     var tabInnerTabs = tabId+'InnerTabs';
     var tabInnerGraphs = tabId+'InnerGraphs';
     var tabRB = tabId+'RB';
+    var tabCI = tabId+'CI';
     var htmlCode = '';
     var age;
     htmlCode += '<div id=\''+tabId+'\'>';
-    htmlCode += '<table>';
+    htmlCode += '<br><table>';
     if(isMine) {
         htmlCode += '<tr><td>Name</td><td>'+mybabyList[babyId].name+'</td></tr>';
         htmlCode += '<tr><td>Surname</td><td>'+mybabyList[babyId].surname+'</td></tr>';
@@ -154,6 +169,7 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<tr><td>Age (total days)</td><td>'+age.totdays+'</td></tr>';
     htmlCode += '<tr><td>Age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
     if(!isMine) {
+        htmlCode += '<tr><td><br></td></tr>';
         htmlCode += '<tr><td>Mother name</td><td>'+babyList[babyId].motherName+'</td></tr>';
         htmlCode += '<tr><td>Mother surname</td><td>'+babyList[babyId].motherSurname+'</td></tr>';
         age = getAge(babyList[babyId].motherBirthdate);
@@ -165,6 +181,9 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
     htmlCode += '<br><br>';
     htmlCode += '<table>';
+    if(isMine) {
+        htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
+    }
     htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '</div>';
@@ -173,6 +192,11 @@ function addBabyTab(tabName, isMine, babyId) {
     (function(ln, tn) {
         $('#'+ln).click(function() {removeTab(tn)});
     })(tabRB, tabId);
+    if(isMine) {
+        (function(ln, bi) {
+            $('#'+ln).click(function() {addMyBabyInfo(bi)});
+        })(tabCI, babyId);
+    }
 
     //Baby page inner tab links
     var babyTabIds = new Array();
@@ -208,7 +232,7 @@ function addBabyTab(tabName, isMine, babyId) {
         $('#'+tabInnerGraphs).append(htmlCode);
         $('#'+babyTabIds[i].tabId).hide();
         var gh = new graphHandler();
-        gh.displayGraph(babyTabIds[i].tabId+'Graph', babyInnerTabList[i].type, babyId);
+        gh.displayGraph(babyTabIds[i].tabId+'Graph', babyInnerTabList[i].type, babyId, isMine);
     }
 
     //Add to tab list
@@ -232,6 +256,90 @@ function addBabyTab(tabName, isMine, babyId) {
         tabList.splice(1, 0, tabElement);
         refreshTabLinks();
     } 
+}
+
+
+function updateBabyTab(tabName, isMine, babyId) {
+    if(isMine == false) {
+        //Info about other babies cannot be updated by the midwife
+        return;
+    }
+
+    var tabId = tabList[babyId+1].tabId;
+    //Remove old div
+    $('#'+tabId).remove();
+
+    var tabLinkName = tabId+'Link';
+    //Prepare tab content
+    var tabInnerTabs = tabId+'InnerTabs';
+    var tabInnerGraphs = tabId+'InnerGraphs';
+    var tabRB = tabId+'RB';
+    var tabCI = tabId+'CI';
+    var htmlCode = '';
+    var age;
+    htmlCode += '<div id=\''+tabId+'\'>';
+    htmlCode += '<br><table>';
+    htmlCode += '<tr><td>Name</td><td>'+mybabyList[babyId].name+'</td></tr>';
+    htmlCode += '<tr><td>Surname</td><td>'+mybabyList[babyId].surname+'</td></tr>';
+    htmlCode += '<tr><td>Birthdate</td><td>'+mybabyList[babyId].birthdate.toDateString()+'</td></tr>';
+    age = getAge(mybabyList[babyId].birthdate);
+    htmlCode += '<tr><td>Age (total days)</td><td>'+age.totdays+'</td></tr>';
+    htmlCode += '<tr><td>Age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
+    htmlCode += '</table>';
+    htmlCode += '<br><br>';
+    htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
+    htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
+    htmlCode += '<br><br>';
+    htmlCode += '<table>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
+    htmlCode += '</table>';
+    htmlCode += '</div>';
+    $('#target').append(htmlCode);
+    $('#'+tabId).hide();
+    (function(ln, tn) {
+        $('#'+ln).click(function() {removeTab(tn)});
+    })(tabRB, tabId);
+    (function(ln, bi) {
+        $('#'+ln).click(function() {addMyBabyInfo(bi)});
+    })(tabCI, babyId);
+
+    //Baby page inner tab links
+    var babyTabIds = new Array();
+    for(var i=0; i<babyInnerTabList.length; i++) {
+        var BITtabId = tabInnerTabs+babyInnerTabList[i].tabId;
+        babyTabIds[i] = {};
+        babyTabIds[i].tabId = BITtabId;
+    }
+    htmlCode = '';
+    htmlCode += '<table><tr>';
+    $('#'+tabInnerTabs).html(htmlCode);
+    for(var i=0; i<babyInnerTabList.length; i++) {
+        var BITlink = babyTabIds[i].tabId+'Link';
+        htmlCode = '';
+        htmlCode += '<td>';
+        htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
+        htmlCode += '</td>';
+        $('#'+tabInnerTabs).append(htmlCode);
+        (function(ln, tn, tabList) {
+            $('#'+ln).click(function() {displayTab(tn, tabList, 'buttonInnerTabSelected', 'buttonInnerTab')});
+        })(BITlink, babyTabIds[i].tabId, babyTabIds);
+    }
+    htmlCode = '</tr></table>';
+    $('#'+tabInnerTabs).append(htmlCode);
+
+    //Baby page inner tabs
+    for(var i=0; i<babyInnerTabList.length; i++) {
+        htmlCode = '';
+        htmlCode += '<div id=\''+babyTabIds[i].tabId+'\'>';
+        htmlCode += '<div id=\''+babyTabIds[i].tabId+'Graph\'>';
+        htmlCode += '</div>';
+        htmlCode += '</div>';
+        $('#'+tabInnerGraphs).append(htmlCode);
+        $('#'+babyTabIds[i].tabId).hide();
+        var gh = new graphHandler();
+        gh.displayGraph(babyTabIds[i].tabId+'Graph', babyInnerTabList[i].type, babyId, isMine);
+    }
 }
 
 
@@ -351,17 +459,38 @@ function checkMomInfo() {
     else {
         addMomTabs();
     }
-    //refreshTabLinks();
-    //displayTab(tabList[0].tabId);
 }
 
 
 function askMomInfo() {
+    var defName = '';
+    var defSurname = '';
+    var defBirthdate = '';
+    if(momInfo) {
+        if(momInfo.name) {
+            defName = momInfo.name;
+        }
+        if(momInfo.surname) {
+            defSurname = momInfo.surname;
+        }
+        if(momInfo.birthdate) {
+            var bDay = momInfo.birthdate.getDate();
+            var bMonth = momInfo.birthdate.getMonth()+1;
+            var bYear = momInfo.birthdate.getFullYear();
+            if(bDay < 10) {
+                bDay = '0'+bDay;
+            }
+            if(bMonth < 10) {
+                bMonth = '0'+bMonth;
+            }
+            defBirthdate = bYear+'-'+bMonth+'-'+bDay;
+        }
+    }
     var htmlCode = '';
     htmlCode += 'Please, insert your informations<br><br>';
-    htmlCode += 'Mother name: <input type=\'text\' id=\'momMotherName\'><br>';
-    htmlCode += 'Mother surname: <input type=\'text\' id=\'momMotherSurname\'><br>';
-    htmlCode += 'Mother birthdate: <input type=\'date\' id=\'momMotherDate\'><br>';
+    htmlCode += 'Mother name: <input type=\'text\' id=\'momMotherName\' value=\''+defName+'\'><br>';
+    htmlCode += 'Mother surname: <input type=\'text\' id=\'momMotherSurname\' value=\''+defSurname+'\'><br>';
+    htmlCode += 'Mother birthdate: <input type=\'date\' id=\'momMotherDate\' value=\''+defBirthdate+'\'><br>';
     htmlCode += '<input type=\'button\' value=\'Save\' onclick=\'saveMomInfo()\'>';
     $('#dialog-content').html(htmlCode);
     $('#dialog-container').fadeIn(1000);
@@ -404,7 +533,7 @@ function addMomTabs() {
     htmlCode += '</div>';
     htmlCode += '<br><br>';
     htmlCode += '<table>';
-    htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBaby()\'></td>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '</div>';
@@ -440,7 +569,7 @@ function addMomTabs() {
         $('#momInnerGraphs').append(htmlCode);
         $('#'+momInnerTabList[i].tabId).hide();
         var gh = new graphHandler();
-        gh.displayGraph(momInnerTabList[i].tabId+'Graph', momInnerTabList[i].type, -1);
+        gh.displayGraph(momInnerTabList[i].tabId+'Graph', momInnerTabList[i].type, -1, true);
     }
 
     var tabElement = {};

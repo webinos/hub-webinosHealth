@@ -23,7 +23,7 @@ function graphHandler() {
        index is the index of the baby in mybabyList array; -1 is for the mother
     */
  
-    graphHandler.prototype.displayGraph = function (divName, type, index) {
+    graphHandler.prototype.displayGraph = function (divName, type, index, showAcquire) {
         //alert('displayGraph - div is '+divName+', type is '+type+', index is '+index);
 
         this.mainDiv = divName;
@@ -61,22 +61,24 @@ function graphHandler() {
             this.description = 'baby temperature';
             this.serviceUri = 'http://webinos.org/api/sensors.temperature';
         }
-        //htmlCode += '<br><br>';
         htmlCode += '<tr><td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td></tr>';
-        //htmlCode += '<br><br>';
-        htmlCode += '<tr><td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td></tr>';
+        if(showAcquire) {
+            htmlCode += '<tr><td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td></tr>';
+        }
         $('#'+this.mainDiv).html(htmlCode);
         (function(mDiv, rf) {
             $('#'+mDiv+'ShowButton').click(function() {
                 rf.selectGraph();
             });
         })(this.mainDiv, this);
-        (function(mDiv, rf) {
-            $('#'+mDiv+'AcquireButton').click(function() {
-                //rf.selectSensor();
-                rf.dataAcquisition();
-            });
-        })(this.mainDiv, this);
+        if(showAcquire) {
+            (function(mDiv, rf) {
+                $('#'+mDiv+'AcquireButton').click(function() {
+                    //rf.selectSensor();
+                    rf.dataAcquisition();
+                });
+            })(this.mainDiv, this);
+        }
 
 /*
         if(this.serviceUri) {
@@ -95,18 +97,26 @@ function graphHandler() {
 
     graphHandler.prototype.dataAcquisition = function () {
         var htmlCode = '';
-        //htmlCode += 'Sorry, no sensors available...';
+        htmlCode += 'Select sensor from explorer...';
         $('#dialog-content').html(htmlCode);
         $('#dialog-container').fadeIn(1000);
+        this.sensors4Choice = null;
+        this.sensorSelected = -1;
+        (function(rf) {
         webinos.dashboard
             .open({
-                module: 'explorer',
-                data: { service: this.serviceUri }
-            }, function(){ } )
+                    module: 'explorer',
+                    data: { service: rf.serviceUri }
+                }, function(){
+                    if(rf.sensorSelected == -1) {
+                        $('#dialog-content').html('No sensor selected...');
+                    }
+            })
             .onAction(function (data) {
                 //alert(JSON.stringify(data));
-                selectServiceStatic(data.result, ref);
+                selectServiceStatic(data.result, rf);
             });
+        })(this);
     }
 
 

@@ -84,10 +84,14 @@ function queryMomInfo(cbk) {
     result = {};
     result.name = 'Nicole';
     result.surname = 'Letterman';
-    result.birthdate = new Date(77, 11, 14);
+    result.birthdate = new Date(77, 11, 19);
 
     cbk(result);
     //return result;
+}
+
+
+function storeMomInfo(mi) {
 }
 
 
