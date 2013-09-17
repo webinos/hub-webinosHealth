@@ -4,7 +4,7 @@
 
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     color:#333
     background-image: radial-gradient(#444,#000);
     background: radial-gradient(#444,#000);
@@ -64,6 +64,8 @@ p {
     border: 1px solid #456;
     margin: 5px;
     color: #D0D0D0
+    min-height:500px;
+    font-size: 16px;
 }
 
 #rightcolumnwrap {
@@ -79,6 +81,7 @@ p {
     margin: 5px;
     padding-left: 5px;
     color: #D0D0D0
+    font-size: 16px;
 }
 
 #footerwrap {
@@ -98,8 +101,11 @@ p {
 }
 
 
-#target { width:518px; min-height:500px; border-radius: 10px;}
-.valid {  background: yellow;}
+#target {
+    width:518px;
+    min-height:500px;
+    border-radius: 10px;
+}
 
 
 .main {  
@@ -178,27 +184,27 @@ th {
 
 /* css for left tabs */
 .buttonTab {
-    background: #D0D0D0;
-    color: #202020;
+    background: #3F3F3F;
+    color: #C0C0C0;
     cursor: pointer;
 }
 
 .buttonTabSelected {
-    background: #202020;
-    color: #D0D0D0;
+    background: #323232;
+    color: #F8F8F8;
 }
 
 
 /* css for inner tabs */
 .buttonInnerTab {
-    background: #D0D0D0;
-    color: #202020;
+    background: #202020;
+    color: #D0D0D0;
     cursor: pointer;
 }
 
 .buttonInnerTabSelected {
-    background: #202020;
-    color: #D0D0D0;
+    background: #D0D0D0;
+    color: #202020;
 }
 
 
@@ -214,6 +220,7 @@ th {
 .selectClass {
     background: #D0D0D0;
     color: #202020;
+    font-size: 16px;
 }
 
 
@@ -226,4 +233,26 @@ td {
     padding-top: 3px;
     padding-left: 10px;
 }
+
+.tabTable {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabTableTr {
+}
+
+.tabTableTd {
+    background: #202020;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+
+.centerDiv {
+    text-align: center;
+}
+
 

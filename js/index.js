@@ -3,7 +3,7 @@ var myBabyCount = 0;
 var otherBabyCount = 0;
 var momInfo = null;
 
-var tmptmp = new Array();
+var googleAvailable;
 
 // tabList is an array of objects including the following attributes:
 // -tabId: it's the id of the tab
@@ -22,15 +22,23 @@ var mybabyList = new Array();    //Mom
 
 
 try {
-    google.load('visualization', '1', {'packages': ['corechart'], 'callback': gl});
+    googleAvailable = false;
+    setTimeout('gl()', 100);
+    google.load('visualization', '1', {'packages': ['corechart'], 'callback': googleLoaded});
 }
 catch(e) {
     alert('google load error: '+e.message);
-    gl();
+    //gl();
+}
+
+
+function googleLoaded() {
+    googleAvailable = true;
 }
 
 
 function gl() {
+    loadingGoogle = false;
     init();
     addProfileTab();
     addListener();
@@ -38,7 +46,6 @@ function gl() {
     $('#close').click(function() {
         $('#dialog-container').fadeOut();
     });
-
 }
 
 
@@ -88,12 +95,35 @@ function getOtherBabies(cbk) {
 
 
 function addMyBabyInfo(index) {
+    var defName;
+    var defSurname;
+    var defBirthdate;
+    if(index != -1) {
+        if(mybabyList[index].name) {
+            defName = mybabyList[index].name;
+        }
+        if(mybabyList[index].surname) {
+            defSurname = mybabyList[index].surname;
+        }
+        if(mybabyList[index].birthdate) {
+            var bDay = mybabyList[index].birthdate.getDate();
+            var bMonth = mybabyList[index].birthdate.getMonth()+1;
+            var bYear = mybabyList[index].birthdate.getFullYear();
+            if(bDay < 10) {
+                bDay = '0'+bDay;
+            }
+            if(bMonth < 10) {
+                bMonth = '0'+bMonth;
+            }
+            defBirthdate = bYear+'-'+bMonth+'-'+bDay;
+        }
+    }
     var htmlCode = '';
-    htmlCode += '<br><br>Add my new baby<br>';
-    htmlCode += 'Name: <input type=\'text\' id=\'myBabyName\'><br>';
-    htmlCode += 'Surname: <input type=\'text\' id=\'myBabySurname\'><br>';
+    htmlCode += '<br><br>My baby info<br>';
+    htmlCode += 'Name: <input type=\'text\' id=\'myBabyName\' value=\''+defName+'\'><br>';
+    htmlCode += 'Surname: <input type=\'text\' id=\'myBabySurname\' value=\''+defSurname+'\'><br>';
     //TODO the input type date is supported by Chrome but not by Firefox
-    htmlCode += 'Birthdate: <input type=\'date\' id=\'myBabyDate\'><br>';
+    htmlCode += 'Birthdate: <input type=\'date\' id=\'myBabyDate\' value=\''+defBirthdate+'\'><br>';
     htmlCode += '<input type=\'button\' value=\'Save\' onclick=\'saveMyBaby('+index+')\'>';
     $('#dialog-content').html(htmlCode);
     $('#dialog-container').fadeIn(1000);
@@ -177,15 +207,15 @@ function addBabyTab(tabName, isMine, babyId) {
     }
     htmlCode += '</table>';
     htmlCode += '<br><br>';
-    htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
-    htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
-    htmlCode += '<br><br>';
     htmlCode += '<table>';
     if(isMine) {
         htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
     }
     htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
     htmlCode += '</table>';
+    htmlCode += '<br><br>';
+    htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
+    htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
     $('#'+tabId).hide();
@@ -206,20 +236,24 @@ function addBabyTab(tabName, isMine, babyId) {
         babyTabIds[i].tabId = BITtabId;
     }
     htmlCode = '';
-    htmlCode += '<table><tr>';
+    htmlCode += '<div class=\'centerDiv\'><table class=\'tabTable\'><tr>';
     $('#'+tabInnerTabs).html(htmlCode);
+    var colWidPer = 100/babyInnerTabList.length;
+    var colWidPx = 300/babyInnerTabList.length;
     for(var i=0; i<babyInnerTabList.length; i++) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
-        htmlCode += '<td>';
-        htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
+        //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        //htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
+        htmlCode += '<div id=\''+BITlink+'\' class=\'buttonInnerTab\'>'+babyInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
         $('#'+tabInnerTabs).append(htmlCode);
         (function(ln, tn, tabList) {
             $('#'+ln).click(function() {displayTab(tn, tabList, 'buttonInnerTabSelected', 'buttonInnerTab')});
         })(BITlink, babyTabIds[i].tabId, babyTabIds);
     }
-    htmlCode = '</tr></table>';
+    htmlCode = '</tr></table></div>';
     $('#'+tabInnerTabs).append(htmlCode);
 
     //Baby page inner tabs
@@ -314,11 +348,13 @@ function updateBabyTab(tabName, isMine, babyId) {
     htmlCode = '';
     htmlCode += '<table><tr>';
     $('#'+tabInnerTabs).html(htmlCode);
+    var colWidPer = 100/babyInnerTabList.length;
     for(var i=0; i<babyInnerTabList.length; i++) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
-        htmlCode += '<td>';
-        htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
+        htmlCode += '<td width='+colWidPer+'%>';
+        //htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
+        htmlCode += '<div id=\''+BITlink+'\' class=\'buttonInnerTab\'>'+babyInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
         $('#'+tabInnerTabs).append(htmlCode);
         (function(ln, tn, tabList) {
@@ -345,7 +381,8 @@ function updateBabyTab(tabName, isMine, babyId) {
 
 function refreshTabLinks() {
     //alert('refreshTabLinks - 01');
-    $('#leftcolumn').html('<table>');
+    $('#leftcolumn').html('<br><table>');
+    var colWid = '240px';
     var prevType = tabList[0].type;
     for(var i=0; i<tabList.length; i++) {
         var tabId = tabList[i].tabId;
@@ -353,24 +390,25 @@ function refreshTabLinks() {
         var htmlCode = '';
         if(prevType != tabList[i].type) {
             if(prevType == 0) {
-                htmlCode += '<tr><td>My babies</td></tr>';
+                htmlCode += '<tr><td width='+colWid+'>My babies</td></tr>';
             }
             else if(prevType == 2) {
-                htmlCode += '<tr><td>Babies</td></tr>';
+                htmlCode += '<tr><td width='+colWid+'>Babies</td></tr>';
             }
             else {
-                htmlCode += '<tr><td></td></tr>';
+                htmlCode += '<tr><td width='+colWid+'></td></tr>';
             }
             prevType = tabList[i].type;
         }
-        htmlCode += '<tr><td><input type=\'button\' value=\''+tabList[i].displayName+'\' id=\''+link+'\' class=\'buttonTab\'></td></tr>';
+        //htmlCode += '<tr><td><input type=\'button\' value=\''+tabList[i].displayName+'\' id=\''+link+'\' class=\'buttonTab\'></td></tr>';
+        htmlCode += '<tr><td width='+colWid+' id=\''+link+'\' class=\'buttonTab\'>'+tabList[i].displayName+'</td></tr>';
         $('#leftcolumn').append(htmlCode);
         (function(ln, tn) {
             //$('#'+ln).click(function() {displayTab(tn)});
             $('#'+ln).click(function() {displayTab(tn, tabList, 'buttonTabSelected', 'buttonTab')});
         })(link, tabId);
     }
-    $('#leftcolumn').append('</table>');
+    $('#leftcolumn').append('</table><br>');
 }
 
 
@@ -409,8 +447,7 @@ function addProfileTab() {
     htmlCode += '</td>';
     htmlCode += '</tr>';
     
-    //add enrol button - to enroll with health Hub
-    $('#rightcolumn').append(htmlCode);
+    $('#rightcolumn').html(htmlCode);
 }
 
 
@@ -527,28 +564,32 @@ function addMomTabs() {
     htmlCode += '<tr><td>My age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
-    htmlCode += '<div id=\'momInnerTabs\'>';
-    htmlCode += '</div>';
-    htmlCode += '<div id=\'momInnerGraphs\'>';
-    htmlCode += '</div>';
-    htmlCode += '<br><br>';
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
     htmlCode += '</table>';
+    htmlCode += '<br><br>';
+    htmlCode += '<div id=\'momInnerTabs\'>';
+    htmlCode += '</div>';
+    htmlCode += '<div id=\'momInnerGraphs\'>';
+    htmlCode += '</div>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
 
     //Mom page inner tab links
     htmlCode = '';
-    htmlCode += '<table><tr>';
+    htmlCode += '<table class=\'tabTable\'><tr class=\'tabTableTr\'>';
     $('#momInnerTabs').html(htmlCode);
+    var colWidPer = 100/momInnerTabList.length;
+    var colWidPx = 450/momInnerTabList.length;
     for(var i=0; i<momInnerTabList.length; i++) {
         var tabId = momInnerTabList[i].tabId;
         var link = tabId+'Link';
         htmlCode = '';
-        htmlCode += '<td>';
-        htmlCode += '<input type=\'button\' value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'><br>';
+        //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        //htmlCode += '<input type=\'button\' value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'><br>';
+        htmlCode += '<div value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'>'+momInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
         $('#momInnerTabs').append(htmlCode);
         (function(ln, tn, tabList) {

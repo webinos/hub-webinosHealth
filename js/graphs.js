@@ -204,7 +204,9 @@ function graphHandler() {
         htmlCode += 'End date: <input type=\'date\' id=\'graphEndDate\'><br>';
         htmlCode += 'View type: <select id=\'graphViewType\'>';
         htmlCode += '<option value=\'0\'>Table</option>';
-        htmlCode += '<option value=\'1\'>Graph</option>';
+        if(googleAvailable) {
+            htmlCode += '<option value=\'1\'>Graph</option>';
+        }
         htmlCode += '</select><br>';
         htmlCode += '<div id=\'dialog-content-graph\'></div>';
         $('#dialog-content').html(htmlCode);
