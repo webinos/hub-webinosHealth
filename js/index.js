@@ -50,7 +50,7 @@ function gl() {
 
 
 function init() {
-    momInnerTabList[0] = {
+/*    momInnerTabList[0] = {
         'tabId': 'momIT0',
         'displayName': 'Blood pressure',
         'type': 0
@@ -69,18 +69,18 @@ function init() {
         'tabId': 'momIT3',
         'displayName': 'Temperature',
         'type': 3
-    };
+    }; */
 
-    babyInnerTabList[0] = {
+    /*babyInnerTabList[0] = {
         'tabId': 'babyIT0',
         'displayName': 'Weight',
         'type': 10
-    };
+    }; 
     babyInnerTabList[1] = {
         'tabId': 'babyIT1',
         'displayName': 'Temperature',
         'type': 11
-    };
+    }; */
 }
 
 
@@ -92,7 +92,15 @@ function getMyBabies(cbk) {
 function getOtherBabies(cbk) {
     queryBabyInfo(cbk); 
 }
+function babyHealth(){
+	
+	window.open("http://localhost:8080/health-data/index.html");
+}
 
+function momHealth(){
+	//alert ("diverting to Mom health page");
+	window.open("http://localhost:8080/health-data/index.html");
+}
 
 function addMyBabyInfo(index) {
     var defName;
@@ -216,6 +224,8 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<br><br>';
     htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
     htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
+    htmlCode += '<br><br>';
+    htmlCode += '<input type=\'button\' value=\'Baby Health\' class=\'buttonGeneric\' onclick=\'babyHealth()\'>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
     $('#'+tabId).hide();
@@ -573,6 +583,8 @@ function addMomTabs() {
     htmlCode += '</div>';
     htmlCode += '<div id=\'momInnerGraphs\'>';
     htmlCode += '</div>';
+    htmlCode += '<br><br>';
+    htmlCode += '<input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
 
