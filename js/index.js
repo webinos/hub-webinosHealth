@@ -50,7 +50,7 @@ function gl() {
 
 
 function init() {
-    momInnerTabList[0] = {
+    /*momInnerTabList[0] = {
         'tabId': 'momIT0',
         'displayName': 'Blood pressure',
         'type': 0
@@ -69,7 +69,7 @@ function init() {
         'tabId': 'momIT3',
         'displayName': 'Temperature',
         'type': 3
-    };
+    }; 
 
     babyInnerTabList[0] = {
         'tabId': 'babyIT0',
@@ -80,7 +80,7 @@ function init() {
         'tabId': 'babyIT1',
         'displayName': 'Temperature',
         'type': 11
-    };
+    };*/
 }
 
 
@@ -91,6 +91,16 @@ function getMyBabies(cbk) {
 
 function getOtherBabies(cbk) {
     queryBabyInfo(cbk); 
+}
+
+function momHealth(){
+ 
+  window.open("http://localhost:8080/health-data/index.html");
+}
+
+function babyHealth(){
+ 
+  window.open("http://localhost:8080/health-data/index.html");
 }
 
 
@@ -180,6 +190,7 @@ function addBabyTab(tabName, isMine, babyId) {
     var tabInnerGraphs = tabId+'InnerGraphs';
     var tabRB = tabId+'RB';
     var tabCI = tabId+'CI';
+    var tabBH = tabId+'BH';
     var htmlCode = '';
     var age;
     htmlCode += '<div id=\''+tabId+'\'>';
@@ -212,6 +223,8 @@ function addBabyTab(tabName, isMine, babyId) {
         htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
     }
     htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Baby Health\' class=\'buttonGeneric\' id=\''+tabBH+'\'></td></tr>';
+    
     htmlCode += '</table>';
     htmlCode += '<br><br>';
     htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
@@ -222,6 +235,11 @@ function addBabyTab(tabName, isMine, babyId) {
     (function(ln, tn) {
         $('#'+ln).click(function() {removeTab(tn)});
     })(tabRB, tabId);
+    
+    (function(ln, tn) {
+        $('#'+ln).click(function() {babyHealth()});
+    })(tabBH);
+    
     if(isMine) {
         (function(ln, bi) {
             $('#'+ln).click(function() {addMyBabyInfo(bi)});
@@ -327,6 +345,7 @@ function updateBabyTab(tabName, isMine, babyId) {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Baby Health\' class=\'buttonGeneric\' id=\''+tabBH+'\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
@@ -334,6 +353,9 @@ function updateBabyTab(tabName, isMine, babyId) {
     (function(ln, tn) {
         $('#'+ln).click(function() {removeTab(tn)});
     })(tabRB, tabId);
+    (function(ln, tn) {
+        $('#'+ln).click(function() {babyHealth()});
+    })(tabBH, tabId);
     (function(ln, bi) {
         $('#'+ln).click(function() {addMyBabyInfo(bi)});
     })(tabCI, babyId);
@@ -423,6 +445,7 @@ function removeTab(tabId) {
     //displayTab(tabList[0].tabId);
     displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
 }
+
 
 
 function addProfileTab() {
@@ -567,6 +590,7 @@ function addMomTabs() {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'My Health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
     htmlCode += '<div id=\'momInnerTabs\'>';
