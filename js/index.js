@@ -4,6 +4,7 @@ var otherBabyCount = 0;
 var momInfo = null;
 
 var googleAvailable;
+var profileVal = 'Profile';
 
 // tabList is an array of objects including the following attributes:
 // -tabId: it's the id of the tab
@@ -38,10 +39,17 @@ function googleLoaded() {
 
 
 function gl() {
+    if(window.localStorage) {
+        if(localStorage['__healthHub_profile']) {
+            profileVal = localStorage['__healthHub_profile'];
+        }
+    }
+
     loadingGoogle = false;
     init();
     addProfileTab();
     addListener();
+
 
     $('#close').click(function() {
         $('#dialog-container').fadeOut();
@@ -265,7 +273,7 @@ function addBabyTab(tabName, isMine, babyId) {
         htmlCode += '</div>';
         $('#'+tabInnerGraphs).append(htmlCode);
         $('#'+babyTabIds[i].tabId).hide();
-        var gh = new graphHandler();
+        var gh = new graphHandler(isMine);
         gh.displayGraph(babyTabIds[i].tabId+'Graph', babyInnerTabList[i].type, babyId, isMine);
     }
 
@@ -373,7 +381,7 @@ function updateBabyTab(tabName, isMine, babyId) {
         htmlCode += '</div>';
         $('#'+tabInnerGraphs).append(htmlCode);
         $('#'+babyTabIds[i].tabId).hide();
-        var gh = new graphHandler();
+        var gh = new graphHandler(isMine);
         gh.displayGraph(babyTabIds[i].tabId+'Graph', babyInnerTabList[i].type, babyId, isMine);
     }
 }
@@ -446,8 +454,10 @@ function addProfileTab() {
     htmlCode += '</select>';
     htmlCode += '</td>';
     htmlCode += '</tr>';
-    
+ 
     $('#rightcolumn').html(htmlCode);
+    $('select#profile').val(profileVal).attr('selected', true);
+    launchPage();
 }
 
 
@@ -567,6 +577,7 @@ function addMomTabs() {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
     htmlCode += '<div id=\'momInnerTabs\'>';
@@ -609,7 +620,7 @@ function addMomTabs() {
         htmlCode += '</div>';
         $('#momInnerGraphs').append(htmlCode);
         $('#'+momInnerTabList[i].tabId).hide();
-        var gh = new graphHandler();
+        var gh = new graphHandler(true);
         gh.displayGraph(momInnerTabList[i].tabId+'Graph', momInnerTabList[i].type, -1, true);
     }
 
@@ -629,6 +640,11 @@ function addMomTabs() {
 }
 
 
+function momHealth() {
+    window.open('http://localhost:8080/health-data/index.html');
+}
+
+
 function addMidwifeTabs() {
     //Retrieves tab list for midwife: midwife home tab and her babies
     tabList = new Array();
@@ -637,8 +653,11 @@ function addMidwifeTabs() {
 
     var htmlCode = '';
     htmlCode += '<div id=\'midwifeTab\'>';
+    htmlCode += '<br>';
+    htmlCode += '<table><tr><td>';
     //htmlCode += '<input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectNewBaby()\'>';
     htmlCode += '<input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectToBaby(null, null)\'>';
+    htmlCode += '</td></tr></table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
 
@@ -656,7 +675,10 @@ function addMidwifeTabs() {
 
 
 function launchPage(){
-    var profileVal = $('#profile').val();
+    profileVal = $('#profile').val();
+    if(window.localStorage) {
+        localStorage['__healthHub_profile'] = profileVal;
+    }
     //alert('profile is:'+ profileVal);
     $('#target').html('');
     $('#leftcolumn').html('');

@@ -1,7 +1,8 @@
 
 
-function graphHandler() {
+function graphHandler(isMom) {
 
+    this.isMom = isMom;
     this.mainDiv = null;
     this.index;
     this.type;
@@ -258,7 +259,7 @@ function graphHandler() {
 
 
     graphHandler.prototype.selectGraph = function() {
-        this.historicData = retrieveData(this.index, this.type);
+        this.historicData = retrieveData(this.index, this.type, this.isMom);
         this.showingData = true;
         //TODO At the moment a table is displayed; add more options for showing data
         // (ie type of graphs, time period selection, ...)

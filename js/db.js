@@ -4,7 +4,7 @@ var sensorData = new Array();
 
 
 function queryBabyInfo(cbk) {
-    //TODO Retrieve midwife baby list from db
+    //TODO Retrieve midwife baby list from locale db
     var result = new Array();
 
     //TODO remove this part - it's temporary while baby list is not saved somewhere...
@@ -110,7 +110,8 @@ function storeData(index, type, timestamp, sensorValues) {
 }
 
 
-function retrieveData(index, type) {
+function retrieveData(index, type, isMom) {
+    //TODO if isMom == false data should be retrieved from remote db
     if(sensorData[index] == null) {
         sensorData[index] = new Array();
     }
