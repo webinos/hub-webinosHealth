@@ -157,7 +157,7 @@ function graphHandler(isMom) {
         webinos.discovery.findServices(
             new ServiceType(dt.api),
             { onFound: function(service){
-                if ((service.id === dt.id) && (service.address === dt.serviceAddress)) {
+                if ((service.id === dt.id) && (service.serviceAddress === dt.address)) {
                     rf.sensors4Choice = new Array();
                     rf.sensors4Choice[0] = service;
                     rf.sensorSelected = 0;
