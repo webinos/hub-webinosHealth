@@ -1,7 +1,8 @@
 
 
-function graphHandler() {
+function graphHandler(isMom) {
 
+    this.isMom = isMom;
     this.mainDiv = null;
     this.index;
     this.type;
@@ -156,13 +157,14 @@ function graphHandler() {
         webinos.discovery.findServices(
             new ServiceType(dt.api),
             { onFound: function(service){
-                if ((service.id === dt.id) && (service.address === dt.serviceAddress)) {
+                if ((service.id === dt.id) && (service.serviceAddress === dt.address)) {
                     rf.sensors4Choice = new Array();
                     rf.sensors4Choice[0] = service;
                     rf.sensorSelected = 0;
 
                     service.bind({
                         onBind: function(){
+                            //alert('bind ok');
                             //getNewSensorData(rf);
                             rf.selectAcquisitionMode();
                         }
@@ -247,7 +249,7 @@ function graphHandler() {
             }
             $('#dialog-content').html(htmlCode);
         }
-        storeData(this.index, this.type, time, event.sensorValues);
+        storeData(this.index, this.type, time, event.sensorValues, dataStoredStatic);
         if(this.showingData) {
             //alert(JSON.stringify(this.historicData));
             //this.historicData.timestamp.push(time);
@@ -258,7 +260,16 @@ function graphHandler() {
 
 
     graphHandler.prototype.selectGraph = function() {
-        this.historicData = retrieveData(this.index, this.type);
+        //this.historicData = retrieveData(this.index, this.type, this.isMom);
+        retrieveData(this.index, this.type, this.isMom, selectGraphStatic, this);
+    }
+
+
+    graphHandler.prototype.selectGraph2 = function(result) {
+        //alert('selectGraph2 - index is '+this.index+', type: '+this.type+', len is '+result.timestamp.length);
+        //alert('index: '+this.index+', type: '+this.type);
+        //this.historicData = retrieveData(this.index, this.type, this.isMom);
+        this.historicData = result;
         this.showingData = true;
         //TODO At the moment a table is displayed; add more options for showing data
         // (ie type of graphs, time period selection, ...)
@@ -295,12 +306,15 @@ function graphHandler() {
 
 
     graphHandler.prototype.showGraph = function() {
+        //alert('showGraph - 01');
         var startDate = new Date($('#graphStartDate').val());
         var endDate = new Date($('#graphEndDate').val());
         var viewType = $('#graphViewType').val();
         var data = graphFilter(this.historicData, startDate, endDate);
+        //alert('showGraph - 01 - filter data len is '+data.timestamp.length);
         var htmlCode = '';
         if(viewType == 0) {
+            //alert('showGraph - 03');
             htmlCode += '<table><tr><td>Date</td><td>Value</td></tr>';
             for(var i=0; i<data.timestamp.length; i++) {
                 //htmlCode += '<tr><td>'+data.timestamp[i].toDateString()+'</td><td>'+data.values[i]+'</td></tr>';
@@ -331,7 +345,7 @@ function graphHandler() {
 
 
 function graphFilter(data, startDate, endDate) {
-    //alert('graphFilter');
+    //alert('graphFilter - data len is '+data.timestamp.length);
     var sd = startDate;
     var ed = endDate;
     if(!isValidDate(startDate)) {
@@ -344,11 +358,14 @@ function graphFilter(data, startDate, endDate) {
     result.timestamp = new Array();
     result.values = new Array();
     for(var i=0; i<data.timestamp.length; i++) {
+        //alert('graphFilter - check data '+i+', sd is '+sd+', ed is '+ed+', ts is '+data.timestamp[i]);
         if(data.timestamp[i] >= sd && data.timestamp[i] <= ed) {
+            //alert('graphFilter - add data '+i);
             result.timestamp.push(data.timestamp[i]);
             result.values.push(data.values[i]);
         }
     }
+    //alert('graphFilter - result len is '+result.timestamp.length);
     return result;
 }
 
@@ -365,5 +382,15 @@ function selectServiceStatic(data, ref) {
     ref.selectService(data);
 }
 
+
+function selectGraphStatic(result, ref) {
+    //alert('selectGraphStatic');
+    ref.selectGraph2(result);
+}
+
+
+function dataStoredStatic() {
+    //alert('dataStoredStatic');
+}
 
 
