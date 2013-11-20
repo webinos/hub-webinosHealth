@@ -3,7 +3,7 @@ var serviceList;
 var sensorData = new Array();
 var dbEngine = null;
 
-var dbRootDir = '/home/stefano/zzz/__whh_';
+var dbRootDir = '__whh_';
 var dbListDb = null;
 var dbListColl = null;
 var dbList = null;
@@ -53,7 +53,7 @@ catch(e) {
 }
 
 
-dbListDb = new DbEmul('/home/stefano/zzz/__whh_list', {});
+dbListDb = new DbEmul('__whh_list', {});
 dbListDb.connect(connCbk);
 
 function connCbk(err) {
