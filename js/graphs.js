@@ -136,6 +136,7 @@ function graphHandler(isMom) {
             $('#dialog-container').fadeIn(1000);
             this.sensors4Choice = null;
             this.sensorSelected = -1;
+            retrieveData(this.index, this.type, this.isMom, function(result, ref) {}, this);
             (function(rf) {
             var serviceList = [ rf.serviceUri ];
             webinos.dashboard
@@ -274,13 +275,20 @@ function graphHandler(isMom) {
             }
             $('#dialog-content').html(htmlCode);
         }
-        storeData(this.index, this.type, time, event.sensorValues, dataStoredStatic);
-        if(this.showingData) {
-            //alert(JSON.stringify(this.historicData));
-            //this.historicData.timestamp.push(time);
-            //this.historicData.values.push(event.sensorValues[0]);
-            this.showGraph();
-        }
+        //storeData(this.index, this.type, time, event.sensorValues, dataStoredStatic);
+        //if(this.showingData) {
+        //    //alert(JSON.stringify(this.historicData));
+        //    //this.historicData.timestamp.push(time);
+        //    //this.historicData.values.push(event.sensorValues[0]);
+        //    this.showGraph();
+        //}
+        (function(ev, rf) {
+            storeData(rf.index, rf.type, time, ev.sensorValues, function(){
+                if(rf.showingData) {
+                    rf.showGraph();
+                }
+            });
+        })(event, this);
     }
 
 
@@ -434,8 +442,8 @@ function selectGraphStatic(result, ref) {
 }
 
 
-function dataStoredStatic() {
-    //alert('dataStoredStatic');
-}
+//function dataStoredStatic() {
+//    //alert('dataStoredStatic');
+//}
 
 
