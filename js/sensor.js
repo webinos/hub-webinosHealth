@@ -18,8 +18,9 @@ getNewSensorData = function(ref) {
     );
 */
 
+    var sensRate = 1000*graphRef[ref.sensors4Choice[ref.sensorSelected].id].acquisitionRate;
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensors4Choice[graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensorSelected].configureSensor(
-        {rate: 5000, time: 5000, eventFireMode: "fixedinterval"},
+        {rate: sensRate, time: 500000, eventFireMode: "fixedinterval"},
         function(){
             //alert('configure sensor ok');
             var htmlCode = '';
@@ -27,6 +28,7 @@ getNewSensorData = function(ref) {
             $('#dialog-content').html(htmlCode);
             graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensors4Choice[graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensorSelected].addEventListener('sensor', dataAcquired, false);
             graphRef[ref.sensors4Choice[ref.sensorSelected].id].acquisitionInProgress = true;
+            graphRef[ref.sensors4Choice[ref.sensorSelected].id].stopButtonOn();
         },
         function (){
             //alert('configure sensor not ok');
@@ -44,14 +46,15 @@ getNewSensorData = function(ref) {
 
 
 configureSuccess = function() {
-    alert('configure success');
+    //alert('configure success');
     var htmlCode = '';
     htmlCode += 'Data acquisition...';
     $('#dialog-content').html(htmlCode);
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensors4Choice[graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensorSelected].addEventListener('sensor', dataAcquired, false);
-    alert('configure success - 07');
+    //alert('configure success - 07');
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].acquisitionInProgress = true;
-    alert('configure success - END');
+    graphRef[ref.sensors4Choice[ref.sensorSelected].id].stopButtonOn();
+    //alert('configure success - END');
 }
 
 
@@ -68,6 +71,7 @@ dataAcquired = function (event) {
     graphRef[event.sensorId].saveData(event);
     if(graphRef[event.sensorId].acquisitionMode == 0) {
         graphRef[event.sensorId].acquisitionInProgress = false;
+        graphRef[event.sensorId].stopButtonOff();
         graphRef[event.sensorId].sensors4Choice[graphRef[event.sensorId].sensorSelected].removeEventListener('sensor', dataAcquired, false);
     }
 }
@@ -76,6 +80,7 @@ dataAcquired = function (event) {
 stopDataAcquisition = function(ref) {
     //alert('stop data acquisition');
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].acquisitionInProgress = false;
+    graphRef[ref.sensors4Choice[ref.sensorSelected].id].stopButtonOff();
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensors4Choice[graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensorSelected].removeEventListener('sensor', dataAcquired, false);
 }
 

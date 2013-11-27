@@ -16,6 +16,7 @@ function graphHandler(isMom) {
     this.historicData = null;
     this.acquisitionInProgress = false;
     this.acquisitionMode = -1;
+    this.acquisitionRate = 10;
     this.showingData = false;
 
     /* type is the type of data to be shown in graph:
@@ -36,41 +37,42 @@ function graphHandler(isMom) {
         this.type = type;
         this.sensorType = type;
         this.availableSensors = new Array();
-        var htmlCode = '<br><table>';
+        var htmlCode = '<br><table><tr>';
         if(type == 0) {
-            htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
             this.description = 'mom blood pressure';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodpressure';
         }
         else if(type == 1) {
-            htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
             this.description = 'mom blood sugar';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodsugar';
         }
         else if(type == 2) {
-            htmlCode += '<tr><td>Div for showing graph with mom heartrate</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with mom heartrate</td></tr>';
             this.description = 'mom heartrate';
             this.serviceUri = 'http://webinos.org/api/sensors/heartratemonitor';
         }
         else if(type == 3) {
-            htmlCode += '<tr><td>Div for showing graph with mom temperature</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with mom temperature</td></tr>';
             this.description = 'mom temperature';
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
         else if(type == 10) {
-            htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
             this.description = 'baby weight';
             this.serviceUri = 'http://webinos.org/api/sensors/weightscale';
         }
         else if(type == 11) {
-            htmlCode += '<tr><td>Div for showing graph with baby temperature</td></tr>';
+            //htmlCode += '<tr><td>Div for showing graph with baby temperature</td></tr>';
             this.description = 'baby temperature';
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
-        htmlCode += '<tr><td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td></tr>';
+        htmlCode += '<td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td>';
         if(showAcquire) {
-            htmlCode += '<tr><td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td></tr>';
+            htmlCode += '<td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td>';
         }
+        htmlCode += '</tr></table>';
         $('#'+this.mainDiv).html(htmlCode);
         (function(mDiv, rf) {
             $('#'+mDiv+'ShowButton').click(function() {
@@ -78,12 +80,20 @@ function graphHandler(isMom) {
             });
         })(this.mainDiv, this);
         if(showAcquire) {
+/*
             (function(mDiv, rf) {
                 $('#'+mDiv+'AcquireButton').click(function() {
                     //rf.selectSensor();
                     rf.dataAcquisition();
                 });
             })(this.mainDiv, this);
+*/
+            if(this.acquisitionInProgress) {
+                this.stopButtonOn();
+            }
+            else {
+                this.stopButtonOff();
+            }
         }
 
 /*
@@ -104,6 +114,7 @@ function graphHandler(isMom) {
     graphHandler.prototype.dataAcquisition = function () {
         this.showingData = false;
         if(this.acquisitionInProgress) {
+/*
             var htmlCode = '';
             htmlCode += 'Acquisition in progress...<br>';
             htmlCode += '<input type=\'button\' value=\'Stop acquisition\' class=\'buttonGeneric\' id=\''+this.mainDiv+'SA\'>';
@@ -116,6 +127,7 @@ function graphHandler(isMom) {
                     $('#dialog-container').fadeOut(300);
                 });
             })(this.mainDiv, this);
+*/
         }
         else {
             var htmlCode = '';
@@ -188,13 +200,26 @@ function graphHandler(isMom) {
         htmlCode += '<option value=\'0\'>Single data</option>';
         htmlCode += '<option value=\'1\'>Continuous</option>';
         htmlCode += '</select></td></tr>';
+        htmlCode += '<tr><td>Select acquisition rate:</td></tr>';
+        htmlCode += '<tr><td><select id=\''+this.mainDiv+'SelectAR\'>';
+        htmlCode += '<option value=\'10\'>10 s</option>';
+        htmlCode += '<option value=\'20\'>20 s</option>';
+        htmlCode += '<option value=\'30\'>30 s</option>';
+        htmlCode += '<option value=\'60\'>60 s</option>';
+        htmlCode += '<option value=\'120\'>120 s</option>';
+        htmlCode += '</select></td></tr>';
+        htmlCode += '<tr><td><input type=\'button\' value=\'Go\' class=\'buttonGeneric\' id=\''+this.mainDiv+'StartAcquisition\'></td></tr>';
         htmlCode += '</table>';
         $('#dialog-content').html(htmlCode);
         (function(mDiv, rf) {
-            $('#'+mDiv+'SelectAM').change(function() {
+            $('#'+mDiv+'StartAcquisition').click(function() {
                 rf.acquisitionMode = +($('#'+rf.mainDiv+'SelectAM').val());
-                //alert('Acquisition mode is '+rf.acquisitionMode);
+                rf.acquisitionRate = +($('#'+rf.mainDiv+'SelectAR').val());
+                //alert('Acquisition rate is '+rf.acquisitionRate);
                 $('#dialog-content').html('');
+                if(rf.acquisitionMode == 1) {
+                    $('#dialog-container').fadeOut(300);
+                }
                 getNewSensorData(rf);
             });
         })(this.mainDiv, this);
@@ -339,6 +364,26 @@ function graphHandler(isMom) {
             htmlCode += '<br>Sorry, not supported';
             $('#dialog-content-graph').html(htmlCode);
         }
+    }
+
+
+    graphHandler.prototype.stopButtonOn = function() {
+        $('#'+this.mainDiv+'AcquireButton').val('Stop data acquisition');
+        (function(mDiv, rf) {
+            $('#'+mDiv+'AcquireButton').click(function() {
+                stopDataAcquisition(rf);
+            });
+        })(this.mainDiv, this);
+    }
+
+
+    graphHandler.prototype.stopButtonOff = function() {
+        $('#'+this.mainDiv+'AcquireButton').val('Acquire data');
+        (function(mDiv, rf) {
+            $('#'+mDiv+'AcquireButton').click(function() {
+                rf.dataAcquisition();
+            });
+        })(this.mainDiv, this);
     }
 
 }

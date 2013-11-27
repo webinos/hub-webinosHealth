@@ -4,7 +4,7 @@
 
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     color:#333
     background-image: radial-gradient(#444,#000);
     background: radial-gradient(#444,#000);
@@ -65,7 +65,7 @@ p {
     margin: 5px;
     color: #D0D0D0
     min-height:500px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 #rightcolumnwrap {
@@ -81,7 +81,7 @@ p {
     margin: 5px;
     padding-left: 5px;
     color: #D0D0D0
-    font-size: 16px;
+    font-size: 18px;
 }
 
 #footerwrap {
@@ -203,7 +203,7 @@ th {
 }
 
 .buttonInnerTabSelected {
-    background: #D0D0D0;
+    background: #909090;
     color: #202020;
 }
 
@@ -220,7 +220,7 @@ th {
 .selectClass {
     background: #D0D0D0;
     color: #202020;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 
@@ -232,6 +232,7 @@ table {
 td {
     padding-top: 3px;
     padding-left: 10px;
+    font-size: 16px;
 }
 
 .tabTable {

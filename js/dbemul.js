@@ -59,6 +59,7 @@ function DbEmul(path, options) {
     }
 
     this.collection = function(cName) {
+        //alert('DbEmul collection');
         var tmp = new CollEmul(cName, this.dirHandle);
         return tmp;
     }
@@ -88,6 +89,7 @@ function CollEmul(cName, fs) {
                         //alert(JSON.stringify(data));
                         var myreader = new FileReader();
                         myreader.onload = function(e) {
+                            //alert('collection find: reader onload');
                             //var tmp = new String(e.target.result);
                             //var res = JSON.parse(tmp);
                             if(e.target.result == null) {
@@ -138,7 +140,7 @@ function CollEmul(cName, fs) {
 
 
     this.insert = function(data, options, cbk) {
-        alert('collection insert');
+        //alert('collection insert');
         (function(rf, da, op, cb) {
             //alert(rf.fileName);
             rf.root.getFile(rf.fileName, null, function(f) {

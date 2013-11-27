@@ -252,13 +252,13 @@ function addBabyTab(tabName, isMine, babyId) {
     //}
     htmlCode += '</table>';
     htmlCode += '<br><br>';
-    htmlCode += '<table>';
+    htmlCode += '<table><tr>';
     if(isMine) {
-        htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
-        htmlCode += '<tr><td><input type=\'button\' value=\'Share data\' class=\'buttonGeneric\' id=\''+tabSD+'\'></td></tr>';
+        htmlCode += '<td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td>';
+        htmlCode += '<td><input type=\'button\' value=\'Share data\' class=\'buttonGeneric\' id=\''+tabSD+'\'></td>';
     }
-    htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
-    htmlCode += '</table>';
+    htmlCode += '<td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td>';
+    htmlCode += '</tr></table>';
     htmlCode += '<br><br>';
     htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
     htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
