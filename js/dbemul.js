@@ -7,10 +7,11 @@ function DbEmul(path, options) {
 
     this.serviceHandle = null;
     this.dirHandle = null;
+    this.serviceId = null;
 
     //alert('DbEmul constructor - 05');
     this.connect = function(cbk) {
-        //alert('DbEmul connect');
+        //alert('DbEmul connect to '+this.dirName);
         (function(rf, cb) {
         webinos.discovery.findServices(
             new ServiceType('http://webinos.org/api/file'),
@@ -27,6 +28,7 @@ function DbEmul(path, options) {
                         //cbk(null);
                         service.bindService({
                             onBind: function() {
+                                rf.serviceId = service.id;
                                 service.requestFileSystem(
                                     1, 1024,
                                     function (fs) {
@@ -61,6 +63,10 @@ function DbEmul(path, options) {
         return tmp;
     }
 
+
+    this.getServiceId = function() {
+        return this.serviceId;
+    }
 }
 
 
@@ -72,22 +78,24 @@ function CollEmul(cName, fs) {
     this.fileHandle = null;
 
     this.find = function(options, cbk) {
+        //alert('collection find');
         (function(rf, op, cb) {
             //alert(rf.fileName);
             rf.root.getFile(rf.fileName, null, function(f) {
+                //alert('collection find: getFile 1 ok');
                 f.file(function(data) {
-                        //alert('getFile ok');
+                        //alert('collection find: getFile 2 ok');
                         //alert(JSON.stringify(data));
                         var myreader = new FileReader();
                         myreader.onload = function(e) {
                             //var tmp = new String(e.target.result);
                             //var res = JSON.parse(tmp);
                             if(e.target.result == null) {
-                                //alert('res null');
+                                //alert('collection find: res null');
                                 cb('no data error', null);
                             }
                             if(e.target.result.length == 0) {
-                                //alert('res 0');
+                                //alert('collection find: res 0');
                                 cb('no data error', null);
                             }
                             var tmp = JSON.parse(e.target.result);
@@ -111,16 +119,17 @@ function CollEmul(cName, fs) {
                                     }
                                 }
                             }
+                            //alert('collection find: return res');
                             cb(null, res);
                         }
                         myreader.onerror = function(e) {
-                            alert('read error!!!');
+                            //alert('collection find: read error!!!');
                             cb('error', null);
                         }
                         myreader.readAsText(data);
                     },
                     function(err){
-                        alert(err);
+                        alert('collection find: getFile 2 error');
                     }
                 );
             });
@@ -129,7 +138,7 @@ function CollEmul(cName, fs) {
 
 
     this.insert = function(data, options, cbk) {
-        //alert('coll insert');
+        alert('collection insert');
         (function(rf, da, op, cb) {
             //alert(rf.fileName);
             rf.root.getFile(rf.fileName, null, function(f) {
@@ -159,24 +168,24 @@ function CollEmul(cName, fs) {
                             rf.fileHandle.createWriter(function (writer){
                                     var bb = new Blob([JSON.stringify(res)]);
                                     writer.onwriteend = function(e) {
-                                        //alert('file written!');
+                                        //alert('collection insert: file written!');
                                         cb(null, null);
                                     };
                                     writer.write(bb);
                                 },
                                 function(err) {
-                                    alert('writer error');
+                                    alert('collection insert: writer error');
                                 }
                             );
                         }
                         myreader.onerror = function(e) {
-                            //alert('read error!!!');
+                            //alert('collection insert: read error!!!');
                             cb('error', null);
                         }
                         myreader.readAsText(data);
                     },
                     function(err){
-                        alert(err);
+                        alert('collection insert: '+err);
                     }
                 );
             });

@@ -1,6 +1,7 @@
 
 var serviceList;
 var sensorData = new Array();
+var remoteSensorData = new Array();
 var dbEngine = null;
 
 var dbRootDir = '__whh_';
@@ -15,6 +16,8 @@ var babyDb = null;
 var babyColl = null;
 var momDb = null;
 var momColl = null;
+var remoteBabyDb = null;
+var remoteBabyColl = null;
 
 var queryMyBabyInfoCbk = null;
 var storeMyBabyInfoCbk = null;
@@ -28,6 +31,7 @@ var retrieveDataCbk = null;
 var retrieveDataIndex = null;
 var retrieveDataType = null;
 var retrieveDataRef = null;
+var retrieveDataIsMom = null;
 
 var storeDataCbk = null;
 var storeDataIndex = null;
@@ -77,6 +81,8 @@ function dbListFound(err, result) {
             dbListMom = new Array();
             babyDb = new Array();
             babyColl = new Array();
+            remoteBabyDb = new Array();
+            remoteBabyColl = new Array();
             for(var i=0; i< result.length; i++) {
                 if(result[i]['mother'] == 1) {
                     //alert('mother baby: '+result[i]['dbname']);
@@ -107,7 +113,7 @@ function dbListFound(err, result) {
 function queryBabyInfo(cbk) {
 //exports.queryBabyInfo = function(cbk) {
 
-    alert('queryBabyInfo');
+    //alert('queryBabyInfo - 01');
     if(queryBabyInfoCbk != null) {
         console.log('queryBabyInfo ERROR!!! - already called');
         cbk(null);
@@ -115,6 +121,7 @@ function queryBabyInfo(cbk) {
     }
 
     if(dbListMid) {
+        //alert('queryBabyInfo - 03');
         //TODO Should check also mom db to retrieve mom info
         queryBabyInfoCbk = cbk;
         dbListMidIndex = -1;
@@ -159,9 +166,10 @@ function queryBabyInfo(cbk) {
 
 
 function queryBabyInfoFindCbk(err, result) {
-/*
+    //alert('queryBabyInfoFindCbk - 01');
     dbListMidIndex++;
     if(err == null && result != null) {
+        //alert('queryBabyInfoFindCbk - 02');
         var babyInfo = {};
         babyInfo.name = result[0]['name'];
         babyInfo.surname = result[0]['surname'];
@@ -170,17 +178,27 @@ function queryBabyInfoFindCbk(err, result) {
         babyListMid.push(babyInfo);
     };
     if(dbListMidIndex < dbListMid.length) {
+        //alert('queryBabyInfoFindCbk - 05');
         //TODO Connect to remote db and handle error in case it is unavailable
-        var babyDb = new dbEngine.Db(dbRootDir+dbListMid[dbListMidIndex], {});
-        var babyColl = babyDb.collection('data');
-        babyColl.find({name:{$exists: true}}).toArray(queryBabyInfoFindCbk);
+        //var babyDb = new dbEngine.Db(dbRootDir+dbListMid[dbListMidIndex], {});
+        //var babyColl = babyDb.collection('data');
+        //babyColl.find({name:{$exists: true}}).toArray(queryBabyInfoFindCbk);
+        remoteBabyDb[dbListMidIndex] = new DbEmul(dbRootDir+dbListMid[dbListMidIndex], {});
+        remoteBabyDb[dbListMidIndex].connect(queryBabyInfoFindCbk2);
+
     }
     else {
+        //alert('queryBabyInfoFindCbk - 08 - len is '+babyListMid.length);
         var tmp = queryBabyInfoCbk;
         queryBabyInfoCbk = null;
         tmp(babyListMid);
     }
-*/
+}
+
+
+function queryBabyInfoFindCbk2(err, result) {
+    remoteBabyColl[dbListMidIndex] = remoteBabyDb[dbListMidIndex].collection('data');
+    remoteBabyColl[dbListMidIndex].find({field:'name'}, queryBabyInfoFindCbk);
 }
 
 
@@ -234,6 +252,7 @@ function queryMyBabyInfoFindCbk(err, result) {
 //*
     dbListIndex++;
     if(err == null && result != null) {
+        //alert('queryMyBabyInfoFindCbk - 03');
         var babyInfo = {};
         babyInfo.name = result[0]['name'];
         babyInfo.surname = result[0]['surname'];
@@ -253,6 +272,7 @@ function queryMyBabyInfoFindCbk(err, result) {
         //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
     }
     else {
+        //alert('queryMyBabyInfoFindCbk - 09 - len is '+babyList.length);
         var tmp = queryMyBabyInfoCbk;
         queryMyBabyInfoCbk = null;
         tmp(babyList);
@@ -308,7 +328,7 @@ function storeMyBabyInfoAdd1Cbk(err, result) {
 
 
 function storeMyBabyInfoAdd2Cbk(err, result) {
-    //alert('storeMyBabyInfoAdd2Cbk');
+    alert('storeMyBabyInfoAdd2Cbk');
     var tmp = storeMyBabyInfoCbk;
     storeMyBabyInfoCbk = null;
     tmp();
@@ -414,7 +434,7 @@ function storeMomInfoAdd1Cbk(err, result) {
 
 
 function storeMomInfoAdd2Cbk(err, result) {
-    //alert('storeMomInfoAdd2Cbk');
+    alert('storeMomInfoAdd2Cbk');
     var tmp = storeMomInfoCbk;
     storeMomInfoCbk = null;
     tmp();
@@ -475,6 +495,7 @@ function storeDataAddCbk(err, result) {
 
 
 function retrieveData(index, type, isMom, cbk, rf) {
+    //alert('retrieveData - 01 - index is '+index+', isMom is '+isMom);
 //exports.retrieveData = function(index, type, isMom, cbk, rf) {
     //TODO if isMom == false data should be retrieved from remote db
     //for(var j=0; j<babyList.length; j++) {
@@ -490,10 +511,23 @@ function retrieveData(index, type, isMom, cbk, rf) {
     }
 
     if(!isMom) {
-        //TODO in case of midwife retrieve data from remote db...
-        alert('midwife call');
-        cbk(null);
-        return;
+        //alert('retrieveData - 03');
+        if(remoteSensorData[index] == null) {
+            remoteSensorData[index] = new Array();
+        }
+        //if(remoteSensorData[index][type] == null) {
+            //TODO in case of midwife retrieve data from remote db...
+            //alert('midwife call');
+            //cbk(null);
+            //return;
+            retrieveDataCbk = cbk;
+            retrieveDataIndex = index;
+            retrieveDataType = type;
+            retrieveDataRef = rf;
+            retrieveDataIsMom = isMom;
+            remoteBabyColl[index].find({field:'type',val:type}, retrieveDataFindCbk);
+            return;
+        //}
     }
 
     //alert('retrieveData - 03');
@@ -505,25 +539,27 @@ function retrieveData(index, type, isMom, cbk, rf) {
         //alert('retrieveData - 04');
         if(index == -1) {
             //TODO retrieve data from mom db
-            //alert('retrieveData - 06');
+            //alert('retrieveData - 05');
             //var momDb = new dbEngine.Db(dbRootDir+'mom', {});
             //var momColl = momDb.collection('data');
             retrieveDataCbk = cbk;
             retrieveDataIndex = index;
             retrieveDataType = type;
             retrieveDataRef = rf;
+            retrieveDataIsMom = isMom;
             //momColl.find({type:type}).toArray(retrieveDataFindCbk);
             momColl.find({field:'type',val:type}, retrieveDataFindCbk);
             return;
         }
         else if (babyList[index]) {
-            //alert('retrieveData - 05');
+            //alert('retrieveData - 06');
             //var babyDb = new dbEngine.Db(dbRootDir+babyList[index].name+index, {});
             //var babyColl = babyDb.collection('data');
             retrieveDataCbk = cbk;
             retrieveDataIndex = index;
             retrieveDataType = type;
             retrieveDataRef = rf;
+            retrieveDataIsMom = isMom;
             babyColl[index].find({field:'type',val:type}, retrieveDataFindCbk);
             return;
         }
@@ -553,12 +589,25 @@ function retrieveDataFindCbk(err, result) {
             tmp.values[j] = result[j].val;
         }
         //alert('retrieveDataFindCbk - 07');
-        sensorData[retrieveDataIndex][retrieveDataType] = tmp;
+        if(retrieveDataIsMom) {
+            //alert('retrieveDataFindCbk - 071');
+            sensorData[retrieveDataIndex][retrieveDataType] = tmp;
+        }
+        else {
+            //alert('retrieveDataFindCbk - 072');
+            remoteSensorData[retrieveDataIndex][retrieveDataType] = tmp;
+        }
+        //alert('retrieveDataFindCbk - 075');
     }
     //alert('retrieveDataFindCbk - 08');
     var tmp = retrieveDataCbk;
     retrieveDataCbk = null;
-    tmp(sensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
+    if(retrieveDataIsMom) {
+        tmp(sensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
+    }
+    else {
+        tmp(remoteSensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
+    }
     //alert('retrieveDataFindCbk - 09');
 }
 
@@ -604,6 +653,12 @@ function generateRndData() {
         result.values.push(rndVal);
     }
     return result;
+}
+
+
+function getServiceId(babyId) {
+    //TODO returns the service id connected to this baby
+    return(babyDb[babyId].getServiceId());
 }
 
 
