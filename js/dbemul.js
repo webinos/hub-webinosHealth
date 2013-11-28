@@ -1,15 +1,15 @@
 
-function DbEmul(path, options) {
+function DbEmul(path, pzhAddr, options) {
 
-    //alert('DbEmul constructor: '+path);
+    //alert('DbEmul constructor: '+path+', '+pzhAddr);
 
     this.dirName = path;
+    this.pzhAddr = pzhAddr;
 
     this.serviceHandle = null;
     this.dirHandle = null;
     this.serviceId = null;
 
-    //alert('DbEmul constructor - 05');
     this.connect = function(cbk) {
         //alert('DbEmul connect to '+this.dirName);
         (function(rf, cb) {
@@ -21,8 +21,11 @@ function DbEmul(path, options) {
                     //alert(service.id);
                     //alert(service.displayName);
                     //alert(service.description);
-                    //alert(service.serviceAddress);
-                    if(service.description.indexOf(rf.dirName) != -1) {
+                    if(!rf.pzhAddr) {
+                        rf.pzhAddr = webinos.session.getPZHId();
+                    }
+                    //alert('pzhAddr: '+rf.pzhAddr+' - sa: '+service.serviceAddress);
+                    if(service.description.indexOf(rf.dirName) != -1 && service.serviceAddress.indexOf(rf.pzhAddr) != -1) {
                         //alert('matched');
                         rf.serviceHandle = service;
                         //cbk(null);

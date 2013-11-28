@@ -57,8 +57,11 @@ catch(e) {
 }
 
 
-dbListDb = new DbEmul('__whh_list', {});
+//alert('pzh id is '+webinos.session.getPZHId());
+dbListDb = new DbEmul('__whh_list', webinos.session.getPZHId(), {});
 dbListDb.connect(connCbk);
+    searchRemoteServices();
+
 
 function connCbk(err) {
     //alert('connCbk - err is '+null);
@@ -77,12 +80,10 @@ function dbListFound(err, result) {
             //    alert('baby db found: '+JSON.stringify(result[j]));
             //}
             dbList = new Array();
-            dbListMid = new Array();
+            //dbListMid = new Array();
             dbListMom = new Array();
             babyDb = new Array();
             babyColl = new Array();
-            remoteBabyDb = new Array();
-            remoteBabyColl = new Array();
             for(var i=0; i< result.length; i++) {
                 if(result[i]['mother'] == 1) {
                     //alert('mother baby: '+result[i]['dbname']);
@@ -92,7 +93,7 @@ function dbListFound(err, result) {
                 else if(result[i]['mother'] == 2) {
                     //alert('midwife baby: '+result[i]['dbname']);
                     //Handle midwife db list
-                    dbListMid.push(result[i]['dbname']);
+                    //dbListMid.push(result[i]['dbname']);
                 }
                 else {
                     dbListMom.push(result[i]['dbname']);
@@ -108,11 +109,10 @@ function dbListFound(err, result) {
     else {
         alert('retrieve lists error: '+err);
     }
+    //searchRemoteServices();
 }
 
 function queryBabyInfo(cbk) {
-//exports.queryBabyInfo = function(cbk) {
-
     //alert('queryBabyInfo - 01');
     if(queryBabyInfoCbk != null) {
         console.log('queryBabyInfo ERROR!!! - already called');
@@ -123,13 +123,15 @@ function queryBabyInfo(cbk) {
     if(dbListMid) {
         //alert('queryBabyInfo - 03');
         //TODO Should check also mom db to retrieve mom info
+        remoteBabyDb = new Array();
+        remoteBabyColl = new Array();
         queryBabyInfoCbk = cbk;
         dbListMidIndex = -1;
         babyListMid = new Array();
         queryBabyInfoFindCbk(null, null);
     }
     else {
-
+/*
         var result = new Array();
 
         //TODO remove this part - it's temporary while baby list is not saved somewhere...
@@ -159,8 +161,9 @@ function queryBabyInfo(cbk) {
         babyInfo.motherSurname = 'Berthod';
         babyInfo.motherBirthdate = new Date(1986, 1, 9);
         result.push(babyInfo);
-
         cbk(result);
+*/
+        cbk(null);
     }
 }
 
@@ -183,7 +186,8 @@ function queryBabyInfoFindCbk(err, result) {
         //var babyDb = new dbEngine.Db(dbRootDir+dbListMid[dbListMidIndex], {});
         //var babyColl = babyDb.collection('data');
         //babyColl.find({name:{$exists: true}}).toArray(queryBabyInfoFindCbk);
-        remoteBabyDb[dbListMidIndex] = new DbEmul(dbRootDir+dbListMid[dbListMidIndex], {});
+        //remoteBabyDb[dbListMidIndex] = new DbEmul(dbRootDir+dbListMid[dbListMidIndex], {});
+        remoteBabyDb[dbListMidIndex] = new DbEmul(dbListMid[dbListMidIndex].description, dbListMid[dbListMidIndex].serviceAddress, {});
         remoteBabyDb[dbListMidIndex].connect(queryBabyInfoFindCbk2);
 
     }
@@ -203,8 +207,6 @@ function queryBabyInfoFindCbk2(err, result) {
 
 
 function queryMyBabyInfo(cbk) {
-//exports.queryMyBabyInfo = function (cbk) {
- 
     //alert('queryMyBabyInfo');
     if(queryMyBabyInfoCbk != null) {
         console.log('queryMyBabyInfo ERROR!!! - already called');
@@ -266,7 +268,7 @@ function queryMyBabyInfoFindCbk(err, result) {
         //var babyColl = babyDb.collection('data');
         //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
         //alert('queryMyBabyInfoFindCbk, dbListIndex='+dbListIndex+', name='+dbList[dbListIndex]);
-        babyDb[dbListIndex] = new DbEmul(dbRootDir+dbList[dbListIndex], {});
+        babyDb[dbListIndex] = new DbEmul(dbRootDir+dbList[dbListIndex], webinos.session.getPZHId(), {});
         babyDb[dbListIndex].connect(queryMyBabyInfoFindCbk2);
         //var babyColl = babyDb.collection('data');
         //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
@@ -292,7 +294,6 @@ function queryMyBabyInfoFindCbk2(err) {
 
 
 function storeMyBabyInfo(index, bi, cbk) {
-//exports.storeMyBabyInfo = function (name, surname, birthdate, index, cbk) {
     //alert('storeMyBabyInfo - index is '+index);
     if(storeMyBabyInfoCbk != null) {
         alert('storeMyBabyInfo ERROR: in progress');
@@ -338,7 +339,6 @@ function storeMyBabyInfoAdd2Cbk(err, result) {
 
 
 function queryMomInfo(cbk) {
-//exports.queryMomInfo = function(cbk) {
     //alert('queryMomInfo');
 //*
     if(queryMomInfoCbk != null) {
@@ -348,7 +348,7 @@ function queryMomInfo(cbk) {
     }
 
     queryMomInfoCbk = cbk;
-    momDb = new DbEmul(dbRootDir+'mom', {});
+    momDb = new DbEmul(dbRootDir+'mom', webinos.session.getPZHId(), {});
     momDb.connect(queryMomInfoFindCbk);
     //var momDb = new dbEngine.Db(dbRootDir+'mom', {});
     //var momColl = momDb.collection('data');
@@ -396,7 +396,6 @@ function queryMomInfoFindCbk2(err, result) {
 
 
 function storeMomInfo(mi, cbk) {
-//exports.storeMomInfo = function(name, surname, birthdate, cbk) {
     //alert('storeMomInfo - 01: '+JSON.stringify(mi));
     if(storeMomInfoCbk != null) {
         alert('storeMomInfo ERROR: in progress');
@@ -443,7 +442,6 @@ function storeMomInfoAdd2Cbk(err, result) {
 
 
 function storeData(index, type, timestamp, sensorValues, cbk) {
-//exports.storeData = function(index, type, timestamp, sensorValues, cbk) {
     //TODO Store acquired data in the correct db
     //alert('Storing data for baby '+index);
     //alert('Storing data for baby '+index+' and sensor '+sensorType+': '+timestamp.toDateString()+' - '+sensorValues[0]);
@@ -496,7 +494,6 @@ function storeDataAddCbk(err, result) {
 
 function retrieveData(index, type, isMom, cbk, rf) {
     //alert('retrieveData - 01 - index is '+index+', isMom is '+isMom);
-//exports.retrieveData = function(index, type, isMom, cbk, rf) {
     //TODO if isMom == false data should be retrieved from remote db
     //for(var j=0; j<babyList.length; j++) {
     //    alert('baby '+j+', name: '+babyList[j].name);
@@ -659,6 +656,50 @@ function generateRndData() {
 function getServiceId(babyId) {
     //TODO returns the service id connected to this baby
     return(babyDb[babyId].getServiceId());
+}
+
+
+function searchRemoteServices() {
+    //alert('searchRemoteServices');
+    //alert(webinos.session.getSessionId());
+    //alert(webinos.session.getPZPId());
+    //alert(webinos.session.getPZHId());
+    //alert(webinos.session.getConnectedPzh());
+    //alert(webinos.session.getConnectedPzp());
+    dbListMid = new Array();
+    webinos.discovery.findServices(
+        new ServiceType('http://webinos.org/api/file'),
+        {
+            onFound: function(service) {
+                //alert(service.api);
+                //alert(service.id);
+                //alert(service.displayName);
+                //alert(service.description);
+                //alert(service.serviceAddress);
+                if(service.description.indexOf('__whh_') != -1 && service.description.indexOf('__whh_list') == -1 && service.description.indexOf('__whh_mom') == -1) {
+                    if(service.serviceAddress.indexOf(webinos.session.getPZHId()) == -1) {
+                        //alert('matched: '+service.serviceAddress);
+                        //alert('matched: '+service.description);
+                        var tmp = {};
+                        tmp.serviceAddress = service.serviceAddress;
+                        tmp.description = service.description;
+                        dbListMid.push(tmp);
+                        //service.bindService({
+                        //    onBind: function() {
+                        //    },
+                        //    onError: function() {
+                        //        cbk("Cannot bind");
+                        //    }
+                        //});
+                    }
+                }
+                else {
+                    //alert('not matched');
+                }
+            }
+        }
+    );
+
 }
 
 
