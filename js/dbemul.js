@@ -41,13 +41,14 @@ function DbEmul(path, pzhAddr, options) {
                                         cbk(null);
                                     },
                                     function (error) {
-                                        alert('Error requesting filesystem (#' + error.code + ')');
+                                        //alert('Error requesting filesystem (#' + error.code + ')');
                                         cbk("No filesystem");
                                     }
                                 );
                                 //cbk(null);
                             },
                             onError: function() {
+                                alert('bind error');
                                 cbk("Cannot bind");
                             }
                         });

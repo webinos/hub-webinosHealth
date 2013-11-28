@@ -57,10 +57,9 @@ catch(e) {
 }
 
 
-//alert('pzh id is '+webinos.session.getPZHId());
 dbListDb = new DbEmul('__whh_list', webinos.session.getPZHId(), {});
 dbListDb.connect(connCbk);
-    searchRemoteServices();
+//searchRemoteServices();
 
 
 function connCbk(err) {
@@ -113,6 +112,14 @@ function dbListFound(err, result) {
 }
 
 function queryBabyInfo(cbk) {
+    searchRemoteServices();
+    //TODO queryBabyInfo2 should be called when searchRemoteServices is finished,
+    // but there's no way to know it
+    setTimeout(function(){queryBabyInfo2(cbk)}, 1000);
+}
+
+
+function queryBabyInfo2(cbk) {
     //alert('queryBabyInfo - 01');
     if(queryBabyInfoCbk != null) {
         console.log('queryBabyInfo ERROR!!! - already called');
@@ -200,9 +207,14 @@ function queryBabyInfoFindCbk(err, result) {
 }
 
 
-function queryBabyInfoFindCbk2(err, result) {
-    remoteBabyColl[dbListMidIndex] = remoteBabyDb[dbListMidIndex].collection('data');
-    remoteBabyColl[dbListMidIndex].find({field:'name'}, queryBabyInfoFindCbk);
+function queryBabyInfoFindCbk2(err) {
+    if(err == null) {
+        remoteBabyColl[dbListMidIndex] = remoteBabyDb[dbListMidIndex].collection('data');
+        remoteBabyColl[dbListMidIndex].find({field:'name'}, queryBabyInfoFindCbk);
+    }
+    else {
+        queryBabyInfoFindCbk(null, null);
+    }
 }
 
 
@@ -596,6 +608,9 @@ function retrieveDataFindCbk(err, result) {
         }
         //alert('retrieveDataFindCbk - 075');
     }
+    else if(err != null) {
+        alert('retrieveDataFindCbk - error: '+err);
+    }
     //alert('retrieveDataFindCbk - 08');
     var tmp = retrieveDataCbk;
     retrieveDataCbk = null;
@@ -680,6 +695,7 @@ function searchRemoteServices() {
                     if(service.serviceAddress.indexOf(webinos.session.getPZHId()) == -1) {
                         //alert('matched: '+service.serviceAddress);
                         //alert('matched: '+service.description);
+                        //alert('matched: '+service.id);
                         var tmp = {};
                         tmp.serviceAddress = service.serviceAddress;
                         tmp.description = service.description;

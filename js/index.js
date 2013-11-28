@@ -632,6 +632,7 @@ function addMomTabs() {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'Check connection requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
     //htmlCode += '<td><input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
