@@ -93,12 +93,12 @@ function init() {
 
 
 function getMyBabies(cbk) {
-    setTimeout(function(){queryMyBabyInfo(cbk)}, 500);;
+    setTimeout(function(){queryMyBabyInfo(cbk)}, 500);
 }
 
 
 function getOtherBabies(cbk) {
-    setTimeout(function(){queryBabyInfo(cbk)}, 500);;
+    setTimeout(function(){queryBabyInfo(cbk)}, 500);
 }
 
 
@@ -106,7 +106,7 @@ function addMyBabyInfo(index) {
     var defName;
     var defSurname;
     var defBirthdate;
-    if(index != -1) {
+    if(index != -1 && mybabyList[index]) {
         if(mybabyList[index].name) {
             defName = mybabyList[index].name;
         }
@@ -139,7 +139,7 @@ function addMyBabyInfo(index) {
 
 
 function saveMyBaby(index) {
-    //alert('saveMyBaby: index is '+index);
+    alert('saveMyBaby: index is '+index);
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
@@ -147,7 +147,9 @@ function saveMyBaby(index) {
     babyInfo.name = babyName;
     babyInfo.surname = babySurname;
     babyInfo.birthdate = new Date(babyDate);
+    //alert('saveMyBaby - 03');
     if(index == -1) {
+        //alert('saveMyBaby - 05');
         mybabyList.push(babyInfo);
         $('#dialog-container').fadeOut();
         addBabyTab(babyInfo.name, true, mybabyList.length-1);
@@ -157,17 +159,33 @@ function saveMyBaby(index) {
         displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
     }
     else {
+        alert('saveMyBaby - 07');
+        if(!mybabyList[index]) {
+            mybabyList[index] = {};
+        }
         mybabyList[index].name = babyInfo.name;
         mybabyList[index].surname = babyInfo.surname;
         mybabyList[index].birthdate = babyInfo.birthdate;
         //removeTab(tabList[index+1].tabId);
+        //alert('saveMyBaby - 075');
         $('#dialog-container').fadeOut();
+        if(!tabList[index+1]) {
+            tabList[index+1] = {};
+            tabList[index+1].type = 1;
+            tabList[index+1].tabId = 'myBaby'+index+'Tab';
+        }
         tabList[index+1].displayName = babyInfo.name;
+        //alert('saveMyBaby - 076');
         storeMyBabyInfo(index, babyInfo, babySaved);
+        //alert('saveMyBaby - 077');
         updateBabyTab(babyInfo.name, true, index);
+        //alert('saveMyBaby - 0773');
         refreshTabLinks();
+        //alert('saveMyBaby - 0776');
         displayTab(tabList[index+1].tabId, tabList, 'buttonTabSelected', 'buttonTab');
+        //alert('saveMyBaby - 079');
     }
+    //alert('saveMyBaby - 09');
 }
 
 
@@ -177,10 +195,12 @@ function babySaved() {
 
 
 function addBabyTab(tabName, isMine, babyId) {
+    //alert('addBabyTab');
     //alert('addBabyTab - name: '+tabName+', babyId: '+babyId);
     var tabId;
     if(isMine) {
-        tabId = 'myBaby'+myBabyCount+'Tab';
+        //tabId = 'myBaby'+myBabyCount+'Tab';
+        tabId = 'myBaby'+babyId+'Tab';
         myBabyCount ++;
         //console.log('myBabyCount:', myBabyCount);
     }
@@ -196,15 +216,23 @@ function addBabyTab(tabName, isMine, babyId) {
     var tabInnerGraphs = tabId+'InnerGraphs';
     var tabRB = tabId+'RB';
     var tabCI = tabId+'CI';
+    var tabSD = tabId+'SD';
     var htmlCode = '';
-    var age;
+    var age = 0;
     htmlCode += '<div id=\''+tabId+'\'>';
     htmlCode += '<br><table>';
-    if(isMine) {
-        htmlCode += '<tr><td>Name</td><td>'+mybabyList[babyId].name+'</td></tr>';
+    //alert('addBabyTab - 03');
+    if(isMine && mybabyList[babyId]) {
+        if(mybabyList[babyId].name) {
+            htmlCode += '<tr><td>Name</td><td>'+mybabyList[babyId].name+'</td></tr>';
+        }
+        if(mybabyList[babyId].surname) {
         htmlCode += '<tr><td>Surname</td><td>'+mybabyList[babyId].surname+'</td></tr>';
+        }
+        if(mybabyList[babyId].birthdate) {
         htmlCode += '<tr><td>Birthdate</td><td>'+mybabyList[babyId].birthdate.toDateString()+'</td></tr>';
         age = getAge(mybabyList[babyId].birthdate);
+        }
     }
     else {
         htmlCode += '<tr><td>Name</td><td>'+babyList[babyId].name+'</td></tr>';
@@ -212,23 +240,25 @@ function addBabyTab(tabName, isMine, babyId) {
         htmlCode += '<tr><td>Birthdate</td><td>'+babyList[babyId].birthdate.toDateString()+'</td></tr>';
         age = getAge(babyList[babyId].birthdate);
     }
+    //alert('addBabyTab - 06');
     htmlCode += '<tr><td>Age (total days)</td><td>'+age.totdays+'</td></tr>';
     htmlCode += '<tr><td>Age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
-    if(!isMine) {
-        htmlCode += '<tr><td><br></td></tr>';
-        htmlCode += '<tr><td>Mother name</td><td>'+babyList[babyId].motherName+'</td></tr>';
-        htmlCode += '<tr><td>Mother surname</td><td>'+babyList[babyId].motherSurname+'</td></tr>';
-        age = getAge(babyList[babyId].motherBirthdate);
-        htmlCode += '<tr><td>Mother age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
-    }
+    //if(!isMine) {
+    //    htmlCode += '<tr><td><br></td></tr>';
+    //    htmlCode += '<tr><td>Mother name</td><td>'+babyList[babyId].motherName+'</td></tr>';
+    //    htmlCode += '<tr><td>Mother surname</td><td>'+babyList[babyId].motherSurname+'</td></tr>';
+    //    age = getAge(babyList[babyId].motherBirthdate);
+    //    htmlCode += '<tr><td>Mother age</td><td>'+age.years+' years, '+age.months+' months</td></tr>';
+    //}
     htmlCode += '</table>';
     htmlCode += '<br><br>';
-    htmlCode += '<table>';
+    htmlCode += '<table><tr>';
     if(isMine) {
-        htmlCode += '<tr><td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td></tr>';
+        htmlCode += '<td><input type=\'button\' value=\'Change baby info\' class=\'buttonGeneric\' id=\''+tabCI+'\'></td>';
+        htmlCode += '<td><input type=\'button\' value=\'Share data\' class=\'buttonGeneric\' id=\''+tabSD+'\'></td>';
     }
-    htmlCode += '<tr><td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td></tr>';
-    htmlCode += '</table>';
+    htmlCode += '<td><input type=\'button\' value=\'Remove\' class=\'buttonGeneric\' id=\''+tabRB+'\'></td>';
+    htmlCode += '</tr></table>';
     htmlCode += '<br><br>';
     htmlCode += '<div id=\''+tabInnerTabs+'\'></div>';
     htmlCode += '<div id=\''+tabInnerGraphs+'\'></div>';
@@ -242,6 +272,9 @@ function addBabyTab(tabName, isMine, babyId) {
         (function(ln, bi) {
             $('#'+ln).click(function() {addMyBabyInfo(bi)});
         })(tabCI, babyId);
+        (function(ln, bi) {
+            $('#'+ln).click(function() {shareBabyData(bi)});
+        })(tabSD, babyId);
     }
 
     //Baby page inner tab links
@@ -298,7 +331,8 @@ function addBabyTab(tabName, isMine, babyId) {
     
     //alert('addBabyTab - 05');
     if(isMine) {
-        tabList.push(tabElement);
+        //tabList.push(tabElement);
+        tabList[babyId+1] = tabElement;
         refreshTabLinks();
     }
     else {
@@ -400,7 +434,10 @@ function refreshTabLinks() {
     $('#leftcolumn').html('<br><table>');
     var colWid = '240px';
     var prevType = tabList[0].type;
+    //alert('refreshTabLinks - 02 - '+tabList.length);
     for(var i=0; i<tabList.length; i++) {
+        if(tabList[i]) {
+        //alert('refreshTabLinks - 03 - loop '+i);
         var tabId = tabList[i].tabId;
         var link = tabId+'Link';
         var htmlCode = '';
@@ -420,10 +457,12 @@ function refreshTabLinks() {
         htmlCode += '<tr><td width='+colWid+' id=\''+link+'\' class=\'buttonTab\'>'+tabList[i].displayName+'</td></tr>';
         $('#leftcolumn').append(htmlCode);
         (function(ln, tn) {
-            //$('#'+ln).click(function() {displayTab(tn)});
+            //alert('refreshTabLinks - 07: '+ln+', '+tn);
             $('#'+ln).click(function() {displayTab(tn, tabList, 'buttonTabSelected', 'buttonTab')});
         })(link, tabId);
+        }
     }
+    //alert('refreshTabLinks - 09');
     $('#leftcolumn').append('</table><br>');
 }
 
@@ -651,7 +690,25 @@ function addMomTabs() {
 
     //alert('addMomTabs - 07 - '+mybabyList.length);
     for(var i=0; i<mybabyList.length; i++) {
-        addBabyTab(mybabyList[i].name, true, i);
+        //alert('addMomTabs - 071');
+        if(mybabyList[i]) {
+            //alert('addMomTabs - 072');
+            if(mybabyList[i].name) {
+                //alert('addMomTabs - 073');
+                addBabyTab(mybabyList[i].name, true, i);
+            }
+            else {
+                //alert('addMomTabs - 074');
+                //TODO Ask for baby info
+                addMyBabyInfo(i);
+            }
+        }
+        else {
+            //alert('addMomTabs - 075');
+            //TODO Ask for baby info
+            addMyBabyInfo(i);
+        }
+        //alert('addMomTabs - 073');
     }
 
     refreshTabLinks();
@@ -666,6 +723,7 @@ function addMomTabs() {
 
 
 function addMidwifeTabs() {
+    //alert('addMidwifeTabs - 01');
     //Retrieves tab list for midwife: midwife home tab and her babies
     tabList = new Array();
 
@@ -688,9 +746,11 @@ function addMidwifeTabs() {
     tabElement.babyId = -1;
     tabList.push(tabElement);
 
+    //alert('addMidwifeTabs - 08');
     for(var i=0; i<babyList.length; i++) {
         addBabyTab(babyList[i].name+' '+babyList[i].surname, false, i);
     }
+    //alert('addMidwifeTabs - 09');
 }
 
 
@@ -706,6 +766,9 @@ function launchPage(){
         //Retrieve my baby list
         getMyBabies(function(res) {
             //alert('got babies! - '+res.length);
+            //for(var j=0; j<res.length; j++) {
+            //    alert(JSON.stringify(res[j]));
+            //}
             mybabyList = res;
             myBabyCount = 0;
             //Constructs tabList for mom profile
