@@ -89,6 +89,11 @@ function init() {
         'displayName': 'Temperature',
         'type': 11
     };
+    babyInnerTabList[2] = {
+        'tabId': 'babyIT2',
+        'displayName': 'O2 saturation',
+        'type': 12
+    };
 }
 
 

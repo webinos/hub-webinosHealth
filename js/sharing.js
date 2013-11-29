@@ -32,7 +32,7 @@ function checkConnReq() {
         .open({
                 module: 'people'
             }, function(){
-                alert('done');
+                //alert('done');
                 }
         )
         .onAction(function (data) {

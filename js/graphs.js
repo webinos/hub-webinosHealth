@@ -68,6 +68,10 @@ function graphHandler(isMom) {
             this.description = 'baby temperature';
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
+        else if(type == 12) {
+            this.description = 'baby o2 saturation';
+            this.serviceUri = 'http://webinos.org/api/sensors/oximeter';
+        }
         htmlCode += '<td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td>';
         if(showAcquire) {
             htmlCode += '<td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td>';
