@@ -201,7 +201,7 @@ function graphHandler(isMom) {
         htmlCode += '<tr><td>Sensor: '+this.sensors4Choice[this.sensorSelected].description+'</td></tr>';
         htmlCode += '<tr><td>Select acquisition mode:</td></tr>';
         htmlCode += '<tr><td><select id=\''+this.mainDiv+'SelectAM\'>';
-        htmlCode += '<option value=\'-1\'>Choose mode</option>';
+//        htmlCode += '<option value=\'-1\'>Choose mode</option>';
         htmlCode += '<option value=\'0\'>Single data</option>';
         htmlCode += '<option value=\'1\'>Continuous</option>';
         htmlCode += '</select></td></tr>';
