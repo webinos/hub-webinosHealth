@@ -445,7 +445,7 @@ function storeMomInfoAdd1Cbk(err, result) {
 
 
 function storeMomInfoAdd2Cbk(err, result) {
-    alert('storeMomInfoAdd2Cbk');
+    //alert('storeMomInfoAdd2Cbk');
     var tmp = storeMomInfoCbk;
     storeMomInfoCbk = null;
     tmp();
