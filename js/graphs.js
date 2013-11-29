@@ -311,10 +311,10 @@ function graphHandler(isMom) {
         htmlCode += 'Start date: <input type=\'date\' id=\'graphStartDate\'><br>';
         htmlCode += 'End date: <input type=\'date\' id=\'graphEndDate\'><br>';
         htmlCode += 'View type: <select id=\'graphViewType\'>';
-        htmlCode += '<option value=\'0\'>Table</option>';
         if(googleAvailable) {
             htmlCode += '<option value=\'1\'>Graph</option>';
         }
+        htmlCode += '<option value=\'0\'>Table</option>';
         htmlCode += '</select><br>';
         htmlCode += '<div id=\'dialog-content-graph\'></div>';
         $('#dialog-content').html(htmlCode);

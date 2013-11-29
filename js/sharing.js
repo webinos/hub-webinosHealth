@@ -26,3 +26,18 @@ function shareBabyData(babyId) {
 }
 
 
+function checkConnReq() {
+
+    webinos.dashboard
+        .open({
+                module: 'people'
+            }, function(){
+                alert('done');
+                }
+        )
+        .onAction(function (data) {
+            alert('action done: '+JSON.stringify(data));
+        });
+
+}
+

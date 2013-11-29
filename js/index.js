@@ -632,6 +632,7 @@ function addMomTabs() {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
     htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'Check connection requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
     //htmlCode += '<td><input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
@@ -732,10 +733,10 @@ function addMidwifeTabs() {
     var htmlCode = '';
     htmlCode += '<div id=\'midwifeTab\'>';
     htmlCode += '<br>';
-    htmlCode += '<table><tr><td>';
-    //htmlCode += '<input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectNewBaby()\'>';
-    htmlCode += '<input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectToBaby(null, null)\'>';
-    htmlCode += '</td></tr></table>';
+    htmlCode += '<table>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectToBaby(null, null)\'></td></tr>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Refresh baby list\' class=\'buttonGeneric\' onclick=\'refreshBabyList()\'></td></tr>';
+    htmlCode += '</table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
 
@@ -751,6 +752,18 @@ function addMidwifeTabs() {
         addBabyTab(babyList[i].name+' '+babyList[i].surname, false, i);
     }
     //alert('addMidwifeTabs - 09');
+}
+
+
+function refreshBabyList() {
+    getOtherBabies(function(res) {
+        babyList = res;
+        otherBabyCount = 0;
+        //Constructs tabList for midwife profile
+        addMidwifeTabs();
+        refreshTabLinks();
+        displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
+    });
 }
 
 
@@ -777,24 +790,18 @@ function launchPage(){
     }
     else if (profileVal === 'Midwife') {
         //Retrieve midwife's baby list
+        refreshBabyList();
+/*
         getOtherBabies(function(res) {
             babyList = res;
             otherBabyCount = 0;
-/*
-            if(babyList.length > 0) {
-                alert('babyList.length: '+babyList.length); 
-                for (var i = 0; i <  babyList.length; i++) {
-                    //console.log('baby name:', babyList[i].name);
-                    addBabyTab(babyList[i].name, false, i);
-                }
-            }
-*/
             //Constructs tabList for midwife profile
             addMidwifeTabs();
 
             refreshTabLinks();
             displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
         });
+*/
     }
     else if (profileVal === 'Profile') {
         //$('#target').html('');
