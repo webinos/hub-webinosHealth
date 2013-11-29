@@ -89,6 +89,11 @@ function init() {
         'displayName': 'Temperature',
         'type': 11
     };
+    babyInnerTabList[2] = {
+        'tabId': 'babyIT2',
+        'displayName': 'O2 saturation',
+        'type': 12
+    };
 }
 
 
@@ -139,7 +144,7 @@ function addMyBabyInfo(index) {
 
 
 function saveMyBaby(index) {
-    alert('saveMyBaby: index is '+index);
+    //alert('saveMyBaby: index is '+index);
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
@@ -159,7 +164,7 @@ function saveMyBaby(index) {
         displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
     }
     else {
-        alert('saveMyBaby - 07');
+        //alert('saveMyBaby - 07');
         if(!mybabyList[index]) {
             mybabyList[index] = {};
         }
@@ -190,7 +195,7 @@ function saveMyBaby(index) {
 
 
 function babySaved() {
-    alert('baby info saved');
+    //alert('baby info saved');
 }
 
 
