@@ -22,7 +22,19 @@ function connectToBaby(babyName, motherName) {
 function shareBabyData(babyId) {
     //TODO should open policy editor to grant permission to midwifie
     var sid = getServiceId(babyId);
-    alert('service id to share is '+sid);
+    //alert('service id to share is '+sid);
+
+    webinos.dashboard
+        .open({
+                module: 'simplifiedpolicyeditor'
+            }, function(){
+                //alert('done');
+                }
+        )
+        .onAction(function (data) {
+            alert('action done: '+JSON.stringify(data));
+        });
+
 }
 
 
