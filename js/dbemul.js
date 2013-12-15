@@ -13,7 +13,8 @@ function DbEmul(path, pzhAddr, options) {
     this.connect = function(cbk) {
         //alert('DbEmul connect to '+this.dirName);
         (function(rf, cb) {
-        webinos.discovery.findServices(
+        //webinos.discovery.findServices(
+        whhFindServices(
             new ServiceType('http://webinos.org/api/file'),
             {
                 onFound: function(service) {
@@ -56,8 +57,12 @@ function DbEmul(path, pzhAddr, options) {
                     else {
                         //alert('not matched');
                     }
+                },
+                onFinish: function() {
+                    //alert('search finished');
                 }
-            }
+            },
+            5000
         );
         })(this, cbk);
     }

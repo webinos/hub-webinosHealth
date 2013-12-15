@@ -43,20 +43,6 @@ var babyListMid = null;
 
 
 
-try{
-//    dbEngine = require('tingodb')();
-    //console.log('dbEngine ok');
-//    dbListDb = new dbEngine.Db(dbRootDir+'list', {});
-    //console.log('list db opened');
-//    dbListColl = dbListDb.collection('list');
-    //console.log('list collection opened');
-//    dbListColl.find({}).toArray(dbListFound);
-}
-catch(e) {
-    console.log('dbEngine error: '+e.message);
-}
-
-
 dbListDb = new DbEmul('__whh_list', webinos.session.getPZHId(), {});
 dbListDb.connect(connCbk);
 //searchRemoteServices();
@@ -675,13 +661,15 @@ function getServiceId(babyId) {
 
 
 function searchRemoteServices() {
-    //alert('searchRemoteServices');
+    alert('searchRemoteServices');
     //alert(webinos.session.getSessionId());
     //alert(webinos.session.getPZPId());
     //alert(webinos.session.getPZHId());
     //alert(webinos.session.getConnectedPzh());
     //alert(webinos.session.getConnectedPzp());
     dbListMid = new Array();
+
+/*
     webinos.discovery.findServices(
         new ServiceType('http://webinos.org/api/file'),
         {
@@ -714,6 +702,32 @@ function searchRemoteServices() {
                 }
             }
         }
+    );
+*/
+    whhFindServices(
+        new ServiceType('http://webinos.org/api/file'),
+        {
+            onFound: function(service) {
+                if(service.description.indexOf('__whh_') != -1 && service.description.indexOf('__whh_list') == -1 && service.description.indexOf('__whh_mom') == -1) {
+                    if(service.serviceAddress.indexOf(webinos.session.getPZHId()) == -1) {
+                        //alert('matched: '+service.serviceAddress);
+                        //alert('matched: '+service.description);
+                        //alert('matched: '+service.id);
+                        var tmp = {};
+                        tmp.serviceAddress = service.serviceAddress;
+                        tmp.description = service.description;
+                        dbListMid.push(tmp);
+                    }
+                }
+                else {
+                    //alert('not matched');
+                }
+            },
+            onFinish: function() {
+                alert('search finished');
+            }
+        },
+        10000
     );
 
 }
