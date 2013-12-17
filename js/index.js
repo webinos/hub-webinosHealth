@@ -108,9 +108,9 @@ function getOtherBabies(cbk) {
 
 
 function addMyBabyInfo(index) {
-    var defName;
-    var defSurname;
-    var defBirthdate;
+    var defName = '';
+    var defSurname = '';
+    var defBirthdate = '';
     if(index != -1 && mybabyList[index]) {
         if(mybabyList[index].name) {
             defName = mybabyList[index].name;
@@ -153,6 +153,9 @@ function saveMyBaby(index) {
     babyInfo.surname = babySurname;
     babyInfo.birthdate = new Date(babyDate);
     //alert('saveMyBaby - 03');
+    if(mybabyList == null) {
+        mybabyList = new Array();
+    }
     if(index == -1) {
         //alert('saveMyBaby - 05');
         mybabyList.push(babyInfo);
@@ -473,6 +476,8 @@ function refreshTabLinks() {
 
 
 function removeTab(tabId) {
+    alert('currently disabled');
+    return;
     //TODO in case of mother baby it should remove the associated db
     $('#'+tabId).remove();
     for(var i=0; i<tabList.length; i++) {
@@ -695,26 +700,28 @@ function addMomTabs() {
     tabList.push(tabElement);
 
     //alert('addMomTabs - 07 - '+mybabyList.length);
-    for(var i=0; i<mybabyList.length; i++) {
-        //alert('addMomTabs - 071');
-        if(mybabyList[i]) {
-            //alert('addMomTabs - 072');
-            if(mybabyList[i].name) {
-                //alert('addMomTabs - 073');
-                addBabyTab(mybabyList[i].name, true, i);
+    if(mybabyList) {
+        for(var i=0; i<mybabyList.length; i++) {
+            //alert('addMomTabs - 071');
+            if(mybabyList[i]) {
+                //alert('addMomTabs - 072');
+                if(mybabyList[i].name) {
+                    //alert('addMomTabs - 073');
+                    addBabyTab(mybabyList[i].name, true, i);
+                }
+                else {
+                    //alert('addMomTabs - 074');
+                    //TODO Ask for baby info
+                    addMyBabyInfo(i);
+                }
             }
             else {
-                //alert('addMomTabs - 074');
+                //alert('addMomTabs - 075');
                 //TODO Ask for baby info
                 addMyBabyInfo(i);
             }
+            //alert('addMomTabs - 073');
         }
-        else {
-            //alert('addMomTabs - 075');
-            //TODO Ask for baby info
-            addMyBabyInfo(i);
-        }
-        //alert('addMomTabs - 073');
     }
 
     refreshTabLinks();
