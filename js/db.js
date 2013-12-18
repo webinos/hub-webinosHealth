@@ -114,7 +114,7 @@ function dbInit() {
                 if(mainDbService == null) {
                     //alert('db search finished: not found');
                     createDbService('__whh__list__', function() {
-                        alert('dbInit: main db created');
+                        //alert('dbInit: main db created');
                     });
 
                 }
@@ -127,10 +127,10 @@ function dbInit() {
 
 
 function queryBabyInfo(cbk) {
-    searchRemoteServices();
+    searchRemoteServices(function(){queryBabyInfo2(cbk)});
     //TODO queryBabyInfo2 should be called when searchRemoteServices is finished,
     // but there's no way to know it
-    setTimeout(function(){queryBabyInfo2(cbk)}, 5000);
+    //setTimeout(function(){queryBabyInfo2(cbk)}, 5000);
 }
 
 
@@ -184,7 +184,7 @@ function queryBabyInfoGetCollection() {
 
 function queryBabyInfoFind() {
     remotebabyDbColl[dbListMidIndex].find({name:{$exists: true}}, function(data) {
-        alert('queryBabyInfoFind - data: '+JSON.stringify(data));
+        //alert('queryBabyInfoFind - data: '+JSON.stringify(data));
         var babyInfo = {};
         if(data.length > 0) {
             babyInfo.name = data[data.length-1]['name'];
@@ -319,7 +319,7 @@ function queryMyBabyInfoGetService() {
 
 function queryMyBabyInfoFind() {
     mybabyDbColl[dbListIndex].find({name:{$exists: true}}, function(data) {
-        alert('queryMyBabyInfoFind - data: '+JSON.stringify(data));
+        //alert('queryMyBabyInfoFind - data: '+JSON.stringify(data));
         var babyInfo = {};
         if(data.length > 0) {
             babyInfo.name = data[data.length-1]['name'];
@@ -452,7 +452,7 @@ function queryMomInfoFind() {
     //alert('queryMomInfoFind');
     momDbColl.find({name:{$exists: true}}, function(data) {
         var momData = null;
-        alert('queryMomInfoFind - data: '+JSON.stringify(data));
+        //alert('queryMomInfoFind - data: '+JSON.stringify(data));
         if(data.length > 0) {
             momData = {};
             momData.name = data[data.length-1]['name'];
@@ -650,7 +650,7 @@ function getServiceId(babyId) {
 }
 
 
-function searchRemoteServices() {
+function searchRemoteServices(cbk) {
     //alert('searchRemoteServices');
     dbListMid = new Array();
     remotebabyDbService = new Array();
@@ -673,10 +673,11 @@ function searchRemoteServices() {
                 }
             },
             onFinish: function() {
-                alert('search finished');
+                //alert('search finished');
+                cbk();
             }
         },
-        3800,
+        4000,
         {zone: 2, name: '__whh__'}
     );
 
