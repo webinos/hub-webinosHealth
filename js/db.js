@@ -172,6 +172,12 @@ function queryBabyInfoGetCollection() {
                 remotebabyDbColl[dbListMidIndex] = _coll;
                 queryBabyInfoFind();
             });
+        }, function(){
+            //In case of error remove this entry
+            remotebabyDbService.splice(dbListMidIndex, 1);
+            dbListMid.splice(dbListMidIndex, 1);
+            dbListMidIndex--;
+            queryBabyInfoGetCollection();
         });
     }
     else {
@@ -660,7 +666,7 @@ function searchRemoteServices(cbk) {
         new ServiceType('http://webinos.org/api/db'),
         {
             onFound: function(service) {
-                if(service.description.indexOf('__whh__list__') == -1 && service.description.indexOf('__whh__mom__') == -1) {
+                if(service.displayName.indexOf('__whh__list__') == -1 && service.displayName.indexOf('__whh__mom__') == -1) {
                     //alert('matched: '+service.id);
                     var tmp = {};
                     tmp.serviceAddress = service.serviceAddress;
