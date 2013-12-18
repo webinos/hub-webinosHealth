@@ -243,7 +243,7 @@ function addBabyTab(tabName, isMine, babyId) {
         age = getAge(mybabyList[babyId].birthdate);
         }
     }
-    else {
+    else if (babyList[babyId]) {
         htmlCode += '<tr><td>Name</td><td>'+babyList[babyId].name+'</td></tr>';
         htmlCode += '<tr><td>Surname</td><td>'+babyList[babyId].surname+'</td></tr>';
         htmlCode += '<tr><td>Birthdate</td><td>'+babyList[babyId].birthdate.toDateString()+'</td></tr>';
@@ -762,8 +762,10 @@ function addMidwifeTabs() {
     tabList.push(tabElement);
 
     //alert('addMidwifeTabs - 08');
-    for(var i=0; i<babyList.length; i++) {
-        addBabyTab(babyList[i].name+' '+babyList[i].surname, false, i);
+    if(babyList) {
+        for(var i=0; i<babyList.length; i++) {
+            addBabyTab(babyList[i].name+' '+babyList[i].surname, false, i);
+        }
     }
     //alert('addMidwifeTabs - 09');
 }
