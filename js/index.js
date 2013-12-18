@@ -108,9 +108,10 @@ function getOtherBabies(cbk) {
 
 
 function addMyBabyInfo(index) {
-    var defName;
-    var defSurname;
-    var defBirthdate;
+    var defName = '';
+    var defSurname = '';
+    var defBirthdate = '';
+    //alert('addMyBabyInfo - index is '+index);
     if(index != -1 && mybabyList[index]) {
         if(mybabyList[index].name) {
             defName = mybabyList[index].name;
@@ -144,7 +145,7 @@ function addMyBabyInfo(index) {
 
 
 function saveMyBaby(index) {
-    //alert('saveMyBaby: index is '+index);
+    //alert('saveMyBaby: index is '+index+' - mbll is '+mybabyList.length);
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
@@ -153,6 +154,9 @@ function saveMyBaby(index) {
     babyInfo.surname = babySurname;
     babyInfo.birthdate = new Date(babyDate);
     //alert('saveMyBaby - 03');
+    if(mybabyList == null) {
+        mybabyList = new Array();
+    }
     if(index == -1) {
         //alert('saveMyBaby - 05');
         mybabyList.push(babyInfo);
@@ -190,7 +194,7 @@ function saveMyBaby(index) {
         displayTab(tabList[index+1].tabId, tabList, 'buttonTabSelected', 'buttonTab');
         //alert('saveMyBaby - 079');
     }
-    //alert('saveMyBaby - 09');
+    //alert('saveMyBaby - 09 - mbll is '+mybabyList.length);
 }
 
 
@@ -473,6 +477,8 @@ function refreshTabLinks() {
 
 
 function removeTab(tabId) {
+    alert('currently disabled');
+    return;
     //TODO in case of mother baby it should remove the associated db
     $('#'+tabId).remove();
     for(var i=0; i<tabList.length; i++) {
@@ -564,6 +570,7 @@ function checkMomInfo() {
 
 
 function askMomInfo() {
+    //alert('askMomInfo - mbll is '+mybabyList.length);
     var defName = '';
     var defSurname = '';
     var defBirthdate = '';
@@ -599,7 +606,7 @@ function askMomInfo() {
 
 
 function saveMomInfo() {
-    //alert('saveMomInfo');
+    //alert('saveMomInfo - 01');
     momInfo = {};
     momInfo.name = $('#momMotherName').val();
     momInfo.surname = $('#momMotherSurname').val();
@@ -622,7 +629,7 @@ function addMomTabs() {
 
     $('#target').html('');
 
-    //alert('addMomTabs - 01');
+    //alert('addMomTabs - 01 - mbll is '+mybabyList.length);
     var age = getAge(momInfo.birthdate);
     var htmlCode = '';
     htmlCode += '<div id=\'momTab\'>';
@@ -694,32 +701,34 @@ function addMomTabs() {
     tabElement.babyId = -1;
     tabList.push(tabElement);
 
-    //alert('addMomTabs - 07 - '+mybabyList.length);
-    for(var i=0; i<mybabyList.length; i++) {
-        //alert('addMomTabs - 071');
-        if(mybabyList[i]) {
-            //alert('addMomTabs - 072');
-            if(mybabyList[i].name) {
-                //alert('addMomTabs - 073');
-                addBabyTab(mybabyList[i].name, true, i);
+    //alert('addMomTabs - 07 - mbll is '+mybabyList.length);
+    if(mybabyList) {
+        for(var i=0; i<mybabyList.length; i++) {
+            //alert('addMomTabs - 071');
+            if(mybabyList[i]) {
+                //alert('addMomTabs - 072');
+                if(mybabyList[i].name) {
+                    //alert('addMomTabs - 073');
+                    addBabyTab(mybabyList[i].name, true, i);
+                }
+                else {
+                    //alert('addMomTabs - 074');
+                    //TODO Ask for baby info
+                    addMyBabyInfo(i);
+                }
             }
             else {
-                //alert('addMomTabs - 074');
+                //alert('addMomTabs - 075');
                 //TODO Ask for baby info
                 addMyBabyInfo(i);
             }
+            //alert('addMomTabs - 073');
         }
-        else {
-            //alert('addMomTabs - 075');
-            //TODO Ask for baby info
-            addMyBabyInfo(i);
-        }
-        //alert('addMomTabs - 073');
     }
 
     refreshTabLinks();
     displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
-    //alert('addMomTabs - 09');
+    //alert('addMomTabs - 09 - mbll is '+mybabyList.length);
 }
 
 

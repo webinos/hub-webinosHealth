@@ -26,7 +26,8 @@ function shareBabyData(babyId) {
 
     webinos.dashboard
         .open({
-                module: 'simplifiedpolicyeditor'
+                module: 'simplifiedpolicyeditor',
+                data: {apiURI: 'http://webinos.org/api/db'}
             }, function(){
                 //alert('done');
                 }
