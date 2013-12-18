@@ -50,6 +50,9 @@ var momDbColl = null;
 var mybabyDbService = new Array();
 var mybabyDbColl = new Array();
 
+var remotebabyDbService = null;
+var remotebabyDbColl = null;
+
 
 dbInit();
 
@@ -142,12 +145,18 @@ function queryBabyInfo2(cbk) {
     if(dbListMid) {
         //alert('queryBabyInfo - 03');
         //TODO Should check also mom db to retrieve mom info
+/*
         remoteBabyDb = new Array();
         remoteBabyColl = new Array();
         queryBabyInfoCbk = cbk;
         dbListMidIndex = -1;
         babyListMid = new Array();
         queryBabyInfoFindCbk(null, null);
+*/
+        queryBabyInfoCbk = cbk;
+        dbListMidIndex = -1;
+        babyListMid = new Array();
+        queryBabyInfoGetCollection();
     }
     else {
         cbk(null);
@@ -155,6 +164,40 @@ function queryBabyInfo2(cbk) {
 }
 
 
+function queryBabyInfoGetCollection() {
+    dbListMidIndex++;
+    if(dbListMidIndex < dbListMid.length) {
+        remotebabyDbService[dbListMidIndex].open(function(_db){
+            _db.collection('list', function(_coll) {
+                remotebabyDbColl[dbListMidIndex] = _coll;
+                queryBabyInfoFind();
+            });
+        });
+    }
+    else {
+        var tmp = queryBabyInfoCbk;
+        queryBabyInfoCbk = null;
+        tmp(babyListMid);
+    }
+}
+
+
+function queryBabyInfoFind() {
+    remotebabyDbColl[dbListMidIndex].find({name:{$exists: true}}, function(data) {
+        alert('queryBabyInfoFind - data: '+JSON.stringify(data));
+        var babyInfo = {};
+        if(data.length > 0) {
+            babyInfo.name = data[data.length-1]['name'];
+            babyInfo.surname = data[data.length-1]['surname'];
+            babyInfo.birthdate = new Date(data[data.length-1]['birthdate']);
+        }
+        babyListMid.push(babyInfo);
+        queryBabyInfoGetCollection();
+    });
+}
+
+
+/*
 function queryBabyInfoFindCbk(err, result) {
     //alert('queryBabyInfoFindCbk - 01');
     dbListMidIndex++;
@@ -196,7 +239,7 @@ function queryBabyInfoFindCbk2(err) {
         queryBabyInfoFindCbk(null, null);
     }
 }
-
+*/
 
 function queryMyBabyInfo(cbk) {
     //alert('queryMyBabyInfo');
@@ -609,63 +652,21 @@ function getServiceId(babyId) {
 
 function searchRemoteServices() {
     //alert('searchRemoteServices');
-    //alert(webinos.session.getSessionId());
-    //alert(webinos.session.getPZPId());
-    //alert(webinos.session.getPZHId());
-    //alert(webinos.session.getConnectedPzh());
-    //alert(webinos.session.getConnectedPzp());
     dbListMid = new Array();
-
-/*
-    webinos.discovery.findServices(
-        new ServiceType('http://webinos.org/api/file'),
-        {
-            onFound: function(service) {
-                //alert(service.api);
-                //alert(service.id);
-                //alert(service.displayName);
-                //alert(service.description);
-                //alert(service.serviceAddress);
-                if(service.description.indexOf('__whh_') != -1 && service.description.indexOf('__whh_list') == -1 && service.description.indexOf('__whh_mom') == -1) {
-                    if(service.serviceAddress.indexOf(webinos.session.getPZHId()) == -1) {
-                        //alert('matched: '+service.serviceAddress);
-                        //alert('matched: '+service.description);
-                        //alert('matched: '+service.id);
-                        var tmp = {};
-                        tmp.serviceAddress = service.serviceAddress;
-                        tmp.description = service.description;
-                        dbListMid.push(tmp);
-                        //service.bindService({
-                        //    onBind: function() {
-                        //    },
-                        //    onError: function() {
-                        //        cbk('Cannot bind');
-                        //    }
-                        //});
-                    }
-                }
-                else {
-                    //alert('not matched');
-                }
-            }
-        }
-    );
-*/
+    remotebabyDbService = new Array();
+    remotebabyDbColl = new Array();
 
     whhFindServices(
         new ServiceType('http://webinos.org/api/db'),
         {
             onFound: function(service) {
-                if(service.description.indexOf('__whh_') != -1 && service.description.indexOf('__whh_list') == -1 && service.description.indexOf('__whh_mom') == -1) {
-                    if(service.serviceAddress.indexOf(webinos.session.getPZHId()) == -1) {
-                        //alert('matched: '+service.serviceAddress);
-                        //alert('matched: '+service.description);
-                        //alert('matched: '+service.id);
-                        var tmp = {};
-                        tmp.serviceAddress = service.serviceAddress;
-                        tmp.description = service.description;
-                        dbListMid.push(tmp);
-                    }
+                if(service.description.indexOf('__whh__list__') == -1 && service.description.indexOf('__whh__mom__') == -1) {
+                    //alert('matched: '+service.id);
+                    var tmp = {};
+                    tmp.serviceAddress = service.serviceAddress;
+                    tmp.description = service.description;
+                    dbListMid.push(tmp);
+                    remotebabyDbService.push(service);
                 }
                 else {
                     //alert('not matched');
@@ -675,7 +676,7 @@ function searchRemoteServices() {
                 alert('search finished');
             }
         },
-        10000,
+        3800,
         {zone: 2, name: '__whh__'}
     );
 
