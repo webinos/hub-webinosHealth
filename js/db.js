@@ -565,7 +565,7 @@ function retrieveData(index, type, isMom, cbk, rf) {
             retrieveDataType = type;
             retrieveDataRef = rf;
             retrieveDataIsMom = isMom;
-            remoteBabyColl[index].find({field:'type',val:type}, retrieveDataFindCbk);
+            remotebabyDbColl[index].find({type:type}, retrieveDataFindCbk);
             return;
         //}
     }
