@@ -51,9 +51,6 @@ var mybabyDbService = new Array();
 var mybabyDbColl = new Array();
 
 
-//dbListDb = new DbEmul('__whh_list', webinos.session.getPZHId(), {});
-//dbListDb.connect(connCbk);
-
 dbInit();
 
 function createDbService(dbName, cbk) {
@@ -126,59 +123,11 @@ function dbInit() {
 }
 
 
-/*
-function connCbk(err) {
-    //alert('connCbk - err is '+null);
-    dbListColl = dbListDb.collection('list');
-//    dbListColl.find({}).toArray(dbListFound);
-    dbListColl.find(null, dbListFound);
-}
-
-
-function dbListFound(err, result) {
-    //alert('dbListFound: '+result);
-    if(err == null) {
-        //alert('retrieved lists: '+result.length);
-        if(result.length > 0) {
-            //for(var j=0; j<result.length; j++) {
-            //    alert('baby db found: '+JSON.stringify(result[j]));
-            //}
-            dbList = new Array();
-            //dbListMid = new Array();
-            dbListMom = new Array();
-            babyDb = new Array();
-            babyColl = new Array();
-            for(var i=0; i< result.length; i++) {
-                if(result[i]['mother'] == 1) {
-                    //alert('mother baby: '+result[i]['dbname']);
-                    dbList.push(result[i]['dbname']);
-                }
-                else if(result[i]['mother'] == 2) {
-                    //alert('midwife baby: '+result[i]['dbname']);
-                    //Handle midwife db list
-                    //dbListMid.push(result[i]['dbname']);
-                }
-                else {
-                    dbListMom.push(result[i]['dbname']);
-                    //alert('mom db');
-                }
-            }
-            //for(var j=0; j<dbList.length; j++) {
-            //    alert('baby db found: '+dbList[j]);
-            //}
-        }
-    }
-    else {
-        alert('retrieve lists error: '+err);
-    }
-}
-*/
-
 function queryBabyInfo(cbk) {
     searchRemoteServices();
     //TODO queryBabyInfo2 should be called when searchRemoteServices is finished,
     // but there's no way to know it
-    setTimeout(function(){queryBabyInfo2(cbk)}, 1000);
+    setTimeout(function(){queryBabyInfo2(cbk)}, 5000);
 }
 
 
@@ -201,38 +150,6 @@ function queryBabyInfo2(cbk) {
         queryBabyInfoFindCbk(null, null);
     }
     else {
-/*
-        var result = new Array();
-
-        //TODO remove this part - it's temporary while baby list is not saved somewhere...
-        var babyInfo = {};
-        babyInfo.name = 'Gollum';
-        babyInfo.surname = 'Gollum';
-        babyInfo.birthdate = new Date(2013, 2, 12);
-        babyInfo.motherName = 'Elizabeth';
-        babyInfo.motherSurname = 'Fuller';
-        babyInfo.motherBirthdate = new Date(1952, 3, 5);
-        result.push(babyInfo);
-
-        babyInfo = {};
-        babyInfo.name = 'Sam';
-        babyInfo.surname = 'Gamgee';
-        babyInfo.birthdate = new Date(2012, 11, 7);
-        babyInfo.motherName = 'Vilma';
-        babyInfo.motherSurname = 'Truman';
-        babyInfo.motherBirthdate = new Date(1973, 8, 26);
-        result.push(babyInfo);
-
-        babyInfo = {};
-        babyInfo.name = 'Pippin';
-        babyInfo.surname = 'Took';
-        babyInfo.birthdate = new Date(2012, 4, 28);
-        babyInfo.motherName = 'Ada';
-        babyInfo.motherSurname = 'Berthod';
-        babyInfo.motherBirthdate = new Date(1986, 1, 9);
-        result.push(babyInfo);
-        cbk(result);
-*/
         cbk(null);
     }
 }
@@ -316,15 +233,16 @@ function queryMyBabyInfoGetService() {
                 new ServiceType('http://webinos.org/api/db'),
                 {
                     onFound: function(service) {
+                        mybabyDbService[dbListIndex] = service;
                         service.open(function(_db){
-                            mybabyDbService[dbListIndex] = _db;
-                            mybabyDbService[dbListIndex].collection('list', function(_coll) {
+                            _db.collection('list', function(_coll) {
                                 mybabyDbColl[dbListIndex] = _coll;
                                 queryMyBabyInfoFind();
                             });
                         });
                     },
                     onFinish: function() {
+/*
                         if(mybabyDbService[dbListIndex] == null) {
                             //baby db service non found - this should not happen
                             //add empty data to result and move to next
@@ -336,6 +254,7 @@ function queryMyBabyInfoGetService() {
                             babyList[babyInfo.index] = babyInfo;
                             queryMyBabyInfoGetService();
                         }
+*/
                     }
                 },
                 1000,
@@ -357,65 +276,18 @@ function queryMyBabyInfoGetService() {
 
 function queryMyBabyInfoFind() {
     mybabyDbColl[dbListIndex].find({name:{$exists: true}}, function(data) {
+        alert('queryMyBabyInfoFind - data: '+JSON.stringify(data));
         var babyInfo = {};
-        babyInfo.name = data[0]['name'];
-        babyInfo.surname = data[0]['surname'];
-        babyInfo.birthdate = new Date(data[0]['birthdate']);
-        babyInfo.index = data[0]['index'];
+        if(data.length > 0) {
+            babyInfo.name = data[data.length-1]['name'];
+            babyInfo.surname = data[data.length-1]['surname'];
+            babyInfo.birthdate = new Date(data[data.length-1]['birthdate']);
+            babyInfo.index = data[data.length-1]['index'];
+        }
         babyList[babyInfo.index] = babyInfo;
         queryMyBabyInfoGetService();
     });
 }
-
-
-/*
-function queryMyBabyInfoFindCbk(err, result) {
-    //alert('queryMyBabyInfoFindCbk - err is '+err);
-    //alert('queryMyBabyInfoFindCbk - err is '+err+' - result is '+result);
-    //alert('queryMyBabyInfoFindCbk - index is '+dbListIndex+' - res length so far is '+babyList.length);
-    //if(result) {
-    //for(var j=0; j<result.length; j++) {
-    //    alert(JSON.stringify(result[j]));
-    //}
-    //}
-    dbListIndex++;
-    if(err == null && result != null) {
-        //alert('queryMyBabyInfoFindCbk - 03');
-        var babyInfo = {};
-        babyInfo.name = result[0]['name'];
-        babyInfo.surname = result[0]['surname'];
-        babyInfo.birthdate = result[0]['birthdate'];
-        babyInfo.index = result[0]['index'];
-        //babyList.push(babyInfo);
-        babyList[babyInfo.index] = babyInfo;
-    };
-    if(dbListIndex < dbList.length) {
-        //var babyDb = new dbEngine.Db(dbRootDir+dbList[dbListIndex], {});
-        //var babyColl = babyDb.collection('data');
-        //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
-        //alert('queryMyBabyInfoFindCbk, dbListIndex='+dbListIndex+', name='+dbList[dbListIndex]);
-        babyDb[dbListIndex] = new DbEmul(dbRootDir+dbList[dbListIndex], webinos.session.getPZHId(), {});
-        babyDb[dbListIndex].connect(queryMyBabyInfoFindCbk2);
-        //var babyColl = babyDb.collection('data');
-        //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
-    }
-    else {
-        //alert('queryMyBabyInfoFindCbk - 09 - len is '+babyList.length);
-        var tmp = queryMyBabyInfoCbk;
-        queryMyBabyInfoCbk = null;
-        tmp(babyList);
-    }
-}
-
-
-function queryMyBabyInfoFindCbk2(err) {
-    //alert('queryMyBabyInfoFindCbk2');
-    babyColl[dbListIndex] = babyDb[dbListIndex].collection('data');
-    babyColl[dbListIndex].find({field:'name'}, queryMyBabyInfoFindCbk);
-    //babyColl.find(null, queryMyBabyInfoFindCbk);
-    //babyColl.find({name:{$exists: true}}).toArray(queryMyBabyInfoFindCbk);
-}
-*/
 
 
 function storeMyBabyInfo(index, bi, cbk) {
@@ -460,9 +332,9 @@ function storeMyBabyInfoGetService() {
         new ServiceType('http://webinos.org/api/db'),
         {
             onFound: function(service) {
+                mybabyDbService[storeMyBabyInfoData.index] = service;
                 service.open(function(_db){
-                    mybabyDbService[storeMyBabyInfoData.index] = _db;
-                    mybabyDbService[storeMyBabyInfoData.index].collection('list', function(_coll) {
+                    _db.collection('list', function(_coll) {
                         mybabyDbColl[storeMyBabyInfoData.index] = _coll;
                         storeMyBabyInfoInsert();
                     });
@@ -482,23 +354,6 @@ function storeMyBabyInfoInsert() {
     mybabyDbColl[storeMyBabyInfoData.index].insert({name: storeMyBabyInfoData.name, surname: storeMyBabyInfoData.surname, birthdate: storeMyBabyInfoData.birthdate, index: storeMyBabyInfoData.index});
 }
 
-/*
-function storeMyBabyInfoAdd1Cbk(err, result) {
-    //alert('storeMyBabyInfoAdd1Cbk - index is '+storeMyBabyInfoData.index);
-    //TODO Here should create a new db service for the new baby
-    babyColl[storeMyBabyInfoData.index].insert([{name: storeMyBabyInfoData.name, surname: storeMyBabyInfoData.surname, birthdate: storeMyBabyInfoData.birthdate, index: storeMyBabyInfoData.index}], {}, storeMyBabyInfoAdd2Cbk);
-}
-
-
-function storeMyBabyInfoAdd2Cbk(err, result) {
-    alert('storeMyBabyInfoAdd2Cbk');
-    var tmp = storeMyBabyInfoCbk;
-    storeMyBabyInfoCbk = null;
-    tmp();
-    //TODO: is this ok? Or should call callback on return of dbListColl.find????
-    //dbListColl.find({}).toArray(dbListFound);
-}
-*/
 
 function queryMomInfo(cbk) {
     //alert('queryMomInfo');
@@ -509,13 +364,6 @@ function queryMomInfo(cbk) {
     }
 
     queryMomInfoCbk = cbk;
-/*
-    momDb = new DbEmul(dbRootDir+'mom', webinos.session.getPZHId(), {});
-    momDb.connect(queryMomInfoFindCbk);
-    //var momDb = new dbEngine.Db(dbRootDir+'mom', {});
-    //var momColl = momDb.collection('data');
-    //momColl.find({name:{$exists: true}}).toArray(queryMomInfoFindCbk);
-//*/
     if(dbListMom == null) {
         //create mom db and return null
         mainDbColl.insert({dbName: '__whh__mom__', mother: 0});
@@ -560,9 +408,8 @@ function queryMomInfo(cbk) {
 function queryMomInfoFind() {
     //alert('queryMomInfoFind');
     momDbColl.find({name:{$exists: true}}, function(data) {
-    //momDbColl.find({}, function(data) {
         var momData = null;
-        //alert('queryMomInfoFind - data: '+JSON.stringify(data));
+        alert('queryMomInfoFind - data: '+JSON.stringify(data));
         if(data.length > 0) {
             momData = {};
             momData.name = data[data.length-1]['name'];
@@ -575,46 +422,6 @@ function queryMomInfoFind() {
         tmp(momData);
     });
 }
-
-
-/*
-function queryMomInfoFindCbk(err, result) {
-    //alert('queryMomInfoFindCbk');
-    if(err == null) {
-        momColl = momDb.collection('data');
-        //momColl.find({name:{$exists: true}}).toArray(queryMomInfoFindCbk);
-        momColl.find({field:'name'}, queryMomInfoFindCbk2);
-    }
-    else {
-        alert('queryMomInfoFindCbk - error');
-    }
-}
-
-
-function queryMomInfoFindCbk2(err, result) {
-    //alert('queryMomInfoFindCbk2');
-    //alert('queryMomInfoFindCbk2 - err is '+err+' - res is '+JSON.stringify(result)+' - res len is '+result.length);
-    //alert('queryMomInfoFindCbk2: '+JSON.stringify(result));
-    var momData = null;
-
-    if(err == null && result != null && result.length > 0) {
-        //alert('queryMomInfoFindCbk - res found');
-        momData = {};
-        momData.name = result[0]['name'];
-        momData.surname = result[0]['surname'];
-        momData.birthdate = result[0]['birthdate'];
-    }
-    else {
-        //alert('queryMomInfoFindCbk - res not found');
-        //momData.name = 'Nicole';
-        //momData.surname = 'Letterman';
-        //momData.birthdate = new Date(77, 11, 19);
-    }
-    var tmp = queryMomInfoCbk;
-    queryMomInfoCbk = null;
-    tmp(momData);
-}
-*/
 
 
 function storeMomInfo(mi, cbk) {
@@ -634,39 +441,7 @@ function storeMomInfo(mi, cbk) {
     //momDbColl.insert({dbName: '__whh__mom__', mother: 0});
     momDbColl.insert({name: storeMomInfoData.name, surname: storeMomInfoData.surname, birthdate: storeMomInfoData.birthdate});
     cbk();
-/*
-    //alert('dbListMom len is '+dbListMom.length+' - '+dbListMom[0]);
-    if(dbListMom.length == 0) {
-        //TODO verify if this branch works ok
-        dbListMom[0] = 'mom';
-        var newDbName = 'mom';
-        dbListColl.insert([{mother: 0, dbname:newDbName}], {}, storeMomInfoAdd1Cbk);
-    }
-    else {
-        storeMomInfoAdd1Cbk(null, null);
-    };
-*/
 }
-
-/*
-function storeMomInfoAdd1Cbk(err, result) {
-    //alert('storeMomInfoAdd1Cbk');
-    //TODO Here should create a new db service for the new baby
-    //var momDb = new dbEngine.Db(dbRootDir+'mom', {});
-    //var momColl = momDb.collection('data');
-    //momColl.insert([{name: storeMomInfoData.name, surname: storeMomInfoData.surname, birthdate: storeMomInfoData.birthdate}], {}, storeMomInfoAdd2Cbk);
-    momColl.insert([{name: storeMomInfoData.name, surname: storeMomInfoData.surname, birthdate: storeMomInfoData.birthdate}], {}, storeMomInfoAdd2Cbk);
-}
-
-
-function storeMomInfoAdd2Cbk(err, result) {
-    //alert('storeMomInfoAdd2Cbk');
-    var tmp = storeMomInfoCbk;
-    storeMomInfoCbk = null;
-    tmp();
-    //dbListColl.find({}).toArray(dbListFound);
-}
-*/
 
 
 function storeData(index, type, timestamp, sensorValues, cbk) {
@@ -710,14 +485,6 @@ function storeData(index, type, timestamp, sensorValues, cbk) {
 
 }
 
-/*
-function storeDataAddCbk(err, result) {
-    //alert('storeDataAddCbk - end');
-    var tmp = storeDataCbk;
-    storeDataCbk = null;
-    tmp();
-}
-*/
 
 function retrieveData(index, type, isMom, cbk, rf) {
     //alert('retrieveData - 01 - index is '+index+', isMom is '+isMom);
@@ -832,96 +599,11 @@ function retrieveDataFindCbk(data) {
     //alert('retrieveDataFindCbk - 09');
 }
 
-/*
-function retrieveDataFindCbk(err, result) {
-    //alert('retrieveDataFindCbk - err is '+err);
-    //for(var j=0; j<result.length; j++) {
-    //    alert(j+': '+JSON.stringify(result[j]));
-    //}
-    if(err == null && result.length > 0) {
-        //alert('retrieveDataFindCbk - 05');
-        var tmp = {};
-        tmp.timestamp = new Array();
-        tmp.values = new Array();
-        //alert('retrieveDataFindCbk - 06');
-        for(var j=0; j<result.length; j++) {
-            tmp.timestamp[j] = result[j].ts;
-            tmp.values[j] = result[j].val;
-        }
-        //alert('retrieveDataFindCbk - 07');
-        if(retrieveDataIsMom) {
-            //alert('retrieveDataFindCbk - 071');
-            sensorData[retrieveDataIndex][retrieveDataType] = tmp;
-        }
-        else {
-            //alert('retrieveDataFindCbk - 072');
-            remoteSensorData[retrieveDataIndex][retrieveDataType] = tmp;
-        }
-        //alert('retrieveDataFindCbk - 075');
-    }
-    else if(err != null) {
-        alert('retrieveDataFindCbk - error: '+err);
-    }
-    //alert('retrieveDataFindCbk - 08');
-    var tmp = retrieveDataCbk;
-    retrieveDataCbk = null;
-    if(retrieveDataIsMom) {
-        tmp(sensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
-    }
-    else {
-        tmp(remoteSensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
-    }
-    //alert('retrieveDataFindCbk - 09');
-}
-*/
-/*
-function generateRndData() {
-    var result = {};
-    result.timestamp = new Array();
-    result.values = new Array();
-
-    //TODO Should query db to retrieve data
-    //Generating some random values for test
-    var now = new Date();
-    var rndYear = now.getFullYear();
-    var rndMonth = now.getMonth();
-    var rndDay = now.getDate();
-    var rndH = now.getHours();
-    var rndm = now.getMinutes();
-    //alert('start date: year '+rndYear+', month '+rndMonth+', day '+rndDay);
-    var rndVal = Math.floor(Math.random()*20)+20;
-    var incm, incVal;
-    for(var i=0; i<80; i++) {
-        incm = Math.floor(Math.random()*1000)+1;
-        incVal = Math.floor(Math.random()*5)-2;
-        rndm -= incm;
-        while(rndm < 0) {
-            rndm += 60;
-            rndH--;
-        }
-        if(rndH < 0) {
-            rndH += 24;
-            rndDay--;
-            if(rndDay < 1) {
-                rndDay = 28;
-                rndMonth -= 1;
-                if(rndMonth < 0) {
-                    rndMonth = 11;
-                    rndYear -= 1;
-                }
-            }
-        }
-        rndVal += incVal;
-        result.timestamp.unshift(new Date(rndYear, rndMonth, rndDay, rndH, rndm, 0));
-        result.values.push(rndVal);
-    }
-    return result;
-}
-*/
 
 function getServiceId(babyId) {
     //TODO returns the service id connected to this baby
-    return(babyDb[babyId].getServiceId());
+    //return(babyDb[babyId].getServiceId());
+    return(mybabyDbService[babyId].id);
 }
 
 
@@ -969,8 +651,9 @@ function searchRemoteServices() {
         }
     );
 */
+
     whhFindServices(
-        new ServiceType('http://webinos.org/api/file'),
+        new ServiceType('http://webinos.org/api/db'),
         {
             onFound: function(service) {
                 if(service.description.indexOf('__whh_') != -1 && service.description.indexOf('__whh_list') == -1 && service.description.indexOf('__whh_mom') == -1) {
@@ -993,7 +676,7 @@ function searchRemoteServices() {
             }
         },
         10000,
-        {zone: 1, name: dbListMom}
+        {zone: 2, name: '__whh__'}
     );
 
 }

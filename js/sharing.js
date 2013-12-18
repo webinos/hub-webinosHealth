@@ -27,7 +27,7 @@ function shareBabyData(babyId) {
     webinos.dashboard
         .open({
                 module: 'simplifiedpolicyeditor',
-                data: {apiURI: 'http://webinos.org/api/file'}
+                data: {apiURI: 'http://webinos.org/api/db'}
             }, function(){
                 //alert('done');
                 }
@@ -36,39 +36,6 @@ function shareBabyData(babyId) {
             alert('action done: '+JSON.stringify(data));
         });
 
-
-/*
-    var pars =  [{
-        "params": {     
-          "local": {
-            "share": {
-              "name": "pippo",
-              "path": "/home/stefano/webinos_fs/pippo-pippo"
-            }
-          }
-        }
-
-}];
-
-
-    webinos.dashboard
-        .open({
-                module: 'serviceSharing',
-                data: {
-                    apiURI: 'http://webinos.org/api/file',
-                    params: {
-                        instances: pars
-                    }
-                }
-            }, function(){
-                //alert('done');
-                }
-        )
-        .onAction(function (data) {
-            alert('action done: '+JSON.stringify(data));
-        });
-
-*/
 }
 
 

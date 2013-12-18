@@ -111,6 +111,7 @@ function addMyBabyInfo(index) {
     var defName = '';
     var defSurname = '';
     var defBirthdate = '';
+    //alert('addMyBabyInfo - index is '+index);
     if(index != -1 && mybabyList[index]) {
         if(mybabyList[index].name) {
             defName = mybabyList[index].name;
@@ -144,7 +145,7 @@ function addMyBabyInfo(index) {
 
 
 function saveMyBaby(index) {
-    //alert('saveMyBaby: index is '+index);
+    //alert('saveMyBaby: index is '+index+' - mbll is '+mybabyList.length);
     var babyName = $('#myBabyName').val();
     var babySurname = $('#myBabySurname').val();
     var babyDate = $('#myBabyDate').val();
@@ -193,7 +194,7 @@ function saveMyBaby(index) {
         displayTab(tabList[index+1].tabId, tabList, 'buttonTabSelected', 'buttonTab');
         //alert('saveMyBaby - 079');
     }
-    //alert('saveMyBaby - 09');
+    //alert('saveMyBaby - 09 - mbll is '+mybabyList.length);
 }
 
 
@@ -569,6 +570,7 @@ function checkMomInfo() {
 
 
 function askMomInfo() {
+    //alert('askMomInfo - mbll is '+mybabyList.length);
     var defName = '';
     var defSurname = '';
     var defBirthdate = '';
@@ -604,7 +606,7 @@ function askMomInfo() {
 
 
 function saveMomInfo() {
-    //alert('saveMomInfo');
+    //alert('saveMomInfo - 01');
     momInfo = {};
     momInfo.name = $('#momMotherName').val();
     momInfo.surname = $('#momMotherSurname').val();
@@ -627,7 +629,7 @@ function addMomTabs() {
 
     $('#target').html('');
 
-    //alert('addMomTabs - 01');
+    //alert('addMomTabs - 01 - mbll is '+mybabyList.length);
     var age = getAge(momInfo.birthdate);
     var htmlCode = '';
     htmlCode += '<div id=\'momTab\'>';
@@ -699,7 +701,7 @@ function addMomTabs() {
     tabElement.babyId = -1;
     tabList.push(tabElement);
 
-    //alert('addMomTabs - 07 - '+mybabyList.length);
+    //alert('addMomTabs - 07 - mbll is '+mybabyList.length);
     if(mybabyList) {
         for(var i=0; i<mybabyList.length; i++) {
             //alert('addMomTabs - 071');
@@ -726,7 +728,7 @@ function addMomTabs() {
 
     refreshTabLinks();
     displayTab(tabList[0].tabId, tabList, 'buttonTabSelected', 'buttonTab');
-    //alert('addMomTabs - 09');
+    //alert('addMomTabs - 09 - mbll is '+mybabyList.length);
 }
 
 
