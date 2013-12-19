@@ -16,7 +16,7 @@ A webinos hub application targeting real-time remote healthcare. It provides a s
 open package.json in an editor, append the following lines in "dependencies" -
     
     "webinos-api-iot"           : "git://github.com/webinos/webinos-api-iot.git",
-    "webinos-api-file"          : "git://github.com/webinos/webinos-api-file.git",
+    "webinos-api-db"          : "git://github.com/webinos/webinos-api-db.git",
 
 Now install all the npm modules in PZP -
   
@@ -56,16 +56,4 @@ Select your profile. You are on your way.
 
     
     
-
-
-
-
-
-    
-    
-    
-    
-
-
-
 
