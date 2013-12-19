@@ -401,6 +401,9 @@ function storeMyBabyInfoGetService() {
 
 function storeMyBabyInfoInsert() {
     mybabyDbColl[storeMyBabyInfoData.index].insert({name: storeMyBabyInfoData.name, surname: storeMyBabyInfoData.surname, birthdate: storeMyBabyInfoData.birthdate, index: storeMyBabyInfoData.index});
+    var tmp = storeMyBabyInfoCbk;
+    storeMyBabyInfoCbk = null;
+    tmp(babyList);
 }
 
 
