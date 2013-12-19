@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://webinos.org/HH" version="1.0">
+  <name>Webinos Health Hub</name>
+  <description>Webinos Health Hub application to enable sharing health sensor data remotely and in real-time between midwife and new mom </description>
+  <content src="index.html" />
+  <icon src="healthHub.png" />
+  <author>Ziran Sun - Stefano Vercelli</author>
+  <email>ziran.sun@samsung.com, stefano.vercelli@telecomitalia.it</email>
+</widget>
+
