@@ -37,6 +37,13 @@ p {
     font-size: 38px;
 }
 
+#mainTitle {
+    text-align: center;
+    font-size: 45px;
+    width: 600px;
+}
+
+
 #contentwrap {
     width: 540px;
     float: left;
@@ -255,6 +262,11 @@ td {
 
 .centerDiv {
     text-align: center;
+}
+
+
+.menuButton {
+    height: 40px;
 }
 
 
