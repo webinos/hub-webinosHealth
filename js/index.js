@@ -94,6 +94,10 @@ function init() {
         'displayName': 'O2 saturation',
         'type': 12
     };
+    windowResize();
+    $(window).on('resize', function() {
+        windowResize();
+    });
 }
 
 
@@ -297,7 +301,7 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<div class=\'centerDiv\'><table class=\'tabTable\'><tr>';
     $('#'+tabInnerTabs).html(htmlCode);
     var colWidPer = 100/babyInnerTabList.length;
-    var colWidPx = 300/babyInnerTabList.length;
+    var colWidPx = 540/babyInnerTabList.length;
     for(var i=0; i<babyInnerTabList.length; i++) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
@@ -502,7 +506,7 @@ function addProfileTab() {
     htmlCode += '<td>';
     htmlCode += '<select id=\'profile\' class=\'selectClass\'>';
     htmlCode += '<option value=\'Profile\'>';
-    htmlCode += 'Choose Your Profile';
+    htmlCode += 'Choose Profile';
     htmlCode += '</option>';
     htmlCode += '<option value=\'Mom\'>';
     htmlCode += 'Mom';
@@ -661,7 +665,7 @@ function addMomTabs() {
     htmlCode += '<table class=\'tabTable\'><tr class=\'tabTableTr\'>';
     $('#momInnerTabs').html(htmlCode);
     var colWidPer = 100/momInnerTabList.length;
-    var colWidPx = 450/momInnerTabList.length;
+    var colWidPx = 540/momInnerTabList.length;
     for(var i=0; i<momInnerTabList.length; i++) {
         var tabId = momInnerTabList[i].tabId;
         var link = tabId+'Link';
@@ -886,6 +890,60 @@ function getAge(birthdate) {
     result.months = age_months;
     result.years = age_years;
     return result;
+}
+
+
+function windowResize() {
+    var headerWidth = $(window).width()-10;
+    var colWidth = 230;
+    var contentWidth = headerWidth - (colWidth<<1);
+    if(headerWidth < 700) {
+        colWidth = 80;
+        contentWidth = headerWidth - (colWidth<<1);
+    }
+    else if(headerWidth < 1000) {
+        contentWidth = 540;
+        colWidth = (headerWidth - contentWidth) >> 1;
+    }
+    var targetWidth = contentWidth - 12;
+    var targetHeight = $(window).height()-136;
+    var popupWidth = $(window).width() - 150;
+    var popupHeight = $(window).height() - 110;
+    //console.log('hw: '+headerWidth+', cw: '+colWidth+', content: '+contentWidth);
+    $('#wrapper').css({
+        'width':headerWidth+'px'
+    });
+    $('#headerwrap').css({
+        'width':headerWidth+'px'
+    });
+    $('#footerwrap').css({
+        'width':headerWidth+'px'
+    });
+    $('#leftcolumnwrap').css({
+        'width':colWidth+'px'
+    });
+    $('#leftcolumn').css({
+        'height':targetHeight+'px'
+    });
+    $('#rightcolumnwrap').css({
+        'width':colWidth+'px',
+    });
+    $('#rightcolumn').css({
+        'height':targetHeight+'px'
+    });
+    $('#contentwrap').css({
+        'width':contentWidth+'px'
+    });
+    $('#target').css({
+        'width':targetWidth+'px',
+        'height':targetHeight+'px'
+    });
+    $('#popup').css({
+        'width':popupWidth+'px',
+        'height':popupHeight+'px',
+        'margin-left':'-'+((popupWidth>>1) + 32)+'px',
+        'margin-top':'-'+((popupHeight>>1) + 20)+'px'
+    });
 }
 
 
