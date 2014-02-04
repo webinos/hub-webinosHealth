@@ -37,8 +37,15 @@ p {
     font-size: 38px;
 }
 
+#mainTitle {
+    text-align: center;
+    font-size: 45px;
+    width: 600px;
+}
+
+
 #contentwrap {
-    width: 530px;
+    width: 540px;
     float: left;
     margin: 0 auto;
 }
@@ -53,7 +60,7 @@ p {
 }
 
 #leftcolumnwrap {
-    width: 250px;
+    width: 230px;
     float: left;
     margin: 0 auto;
 }
@@ -63,13 +70,13 @@ p {
     border-radius: 10px;
     border: 1px solid #456;
     margin: 5px;
-    color: #D0D0D0
-    min-height:500px;
+    color: #D0D0D0;
+    min-height:400px;
     font-size: 18px;
 }
 
 #rightcolumnwrap {
-    width: 220px;
+    width: 230px;
     float: left;
     margin: 0 auto;
 }
@@ -82,6 +89,7 @@ p {
     padding-left: 5px;
     color: #D0D0D0
     font-size: 18px;
+    min-height:400px;
 }
 
 #footerwrap {
@@ -103,7 +111,7 @@ p {
 
 #target {
     width:518px;
-    min-height:500px;
+    min-height:400px;
     border-radius: 10px;
 }
 
@@ -220,7 +228,7 @@ th {
 .selectClass {
     background: #D0D0D0;
     color: #202020;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 
@@ -254,6 +262,11 @@ td {
 
 .centerDiv {
     text-align: center;
+}
+
+
+.menuButton {
+    height: 40px;
 }
 
 

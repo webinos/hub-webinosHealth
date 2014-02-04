@@ -6,6 +6,9 @@ var momInfo = null;
 var googleAvailable;
 var profileVal = 'Profile';
 
+var leftMenuButtonPressed = false;
+var rightMenuButtonPressed = false;
+
 // tabList is an array of objects including the following attributes:
 // -tabId: it's the id of the tab
 // -displayName: it's the name of the tab
@@ -94,6 +97,32 @@ function init() {
         'displayName': 'O2 saturation',
         'type': 12
     };
+    windowResize();
+    $(window).on('resize', function() {
+        windowResize();
+    });
+        $('#leftMenuButton').click(function() {
+            if(leftMenuButtonPressed) {
+                $('#leftcolumnwrap').hide();
+                $('#leftMenuButton').attr('src', 'assets/menu0.png');
+            }
+            else {
+                $('#leftcolumnwrap').show();
+                $('#leftMenuButton').attr('src', 'assets/menu1.png');
+            }
+            leftMenuButtonPressed = !leftMenuButtonPressed;
+        });
+        $('#rightMenuButton').click(function() {
+            if(rightMenuButtonPressed) {
+                $('#rightcolumnwrap').hide();
+                $('#rightMenuButton').attr('src', 'assets/menu0.png');
+            }
+            else {
+                $('#rightcolumnwrap').show();
+                $('#rightMenuButton').attr('src', 'assets/menu1.png');
+            }
+            rightMenuButtonPressed = !rightMenuButtonPressed;
+        });
 }
 
 
@@ -297,12 +326,12 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode += '<div class=\'centerDiv\'><table class=\'tabTable\'><tr>';
     $('#'+tabInnerTabs).html(htmlCode);
     var colWidPer = 100/babyInnerTabList.length;
-    var colWidPx = 300/babyInnerTabList.length;
+    var colWidPx = 540/babyInnerTabList.length;
     for(var i=0; i<babyInnerTabList.length; i++) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
         //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
-        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd babyTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div id=\''+BITlink+'\' class=\'buttonInnerTab\'>'+babyInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
@@ -502,7 +531,7 @@ function addProfileTab() {
     htmlCode += '<td>';
     htmlCode += '<select id=\'profile\' class=\'selectClass\'>';
     htmlCode += '<option value=\'Profile\'>';
-    htmlCode += 'Choose Your Profile';
+    htmlCode += 'Choose Profile';
     htmlCode += '</option>';
     htmlCode += '<option value=\'Mom\'>';
     htmlCode += 'Mom';
@@ -643,8 +672,8 @@ function addMomTabs() {
     htmlCode += '<br><br>';
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
-    htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
-    htmlCode += '<td><input type=\'button\' value=\'Check connection requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td>';
+    htmlCode += '<td><input type=\'button\' value=\'Check requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
     //htmlCode += '<td><input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
@@ -661,13 +690,13 @@ function addMomTabs() {
     htmlCode += '<table class=\'tabTable\'><tr class=\'tabTableTr\'>';
     $('#momInnerTabs').html(htmlCode);
     var colWidPer = 100/momInnerTabList.length;
-    var colWidPx = 450/momInnerTabList.length;
+    var colWidPx = 540/momInnerTabList.length;
     for(var i=0; i<momInnerTabList.length; i++) {
         var tabId = momInnerTabList[i].tabId;
         var link = tabId+'Link';
         htmlCode = '';
         //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
-        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd momTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'>'+momInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
@@ -886,6 +915,124 @@ function getAge(birthdate) {
     result.months = age_months;
     result.years = age_years;
     return result;
+}
+
+
+function windowResize() {
+    var headerWidth = $(window).width()-10;
+    var colWidth = 230;
+    var contentWidth = headerWidth - (colWidth<<1);
+    var showCols = true;
+    if(headerWidth < 700 || ($(window).width() < $(window).height())) {
+        colWidth = 170;
+        contentWidth = headerWidth;
+        showCols = false;
+    }
+    else if(headerWidth < 880) {
+        colWidth = 170;
+        contentWidth = headerWidth - (colWidth<<1);
+    }
+    else if(headerWidth < 1000) {
+        contentWidth = 540;
+        colWidth = (headerWidth - contentWidth) >> 1;
+    }
+    var targetWidth = contentWidth - 12;
+    var targetHeight = $(window).height()-136;
+    var popupWidth = $(window).width() - 150;
+    var popupHeight = $(window).height() - 110;
+    var mainTitleWidth = $(window).width() - 150;
+    var babyColWidPx;
+    var momColWidPx;
+    if(showCols) {
+        babyColWidPx = ($(window).width()-(colWidth<<1))/babyInnerTabList.length;
+        momColWidPx = ($(window).width()-(colWidth<<1))/momInnerTabList.length;
+    }
+    else {
+        babyColWidPx = ($(window).width())/babyInnerTabList.length;
+        momColWidPx = ($(window).width())/momInnerTabList.length;
+    }
+
+    $('#wrapper').css({
+        'width':headerWidth+'px'
+    });
+    $('#headerwrap').css({
+        'width':headerWidth+'px'
+    });
+    $('#footerwrap').css({
+        'width':headerWidth+'px'
+    });
+    $('#leftcolumnwrap').css({
+        'width':colWidth+'px'
+    });
+    $('#leftcolumn').css({
+        'height':targetHeight+'px'
+    });
+    $('#rightcolumnwrap').css({
+        'width':colWidth+'px',
+    });
+    $('#rightcolumn').css({
+        'height':targetHeight+'px'
+    });
+    $('#contentwrap').css({
+        'width':contentWidth+'px'
+    });
+    $('#target').css({
+        'width':targetWidth+'px',
+        'height':targetHeight+'px'
+    });
+    $('#popup').css({
+        'width':popupWidth+'px',
+        'height':popupHeight+'px',
+        'margin-left':'-'+((popupWidth>>1) + 32)+'px',
+        'margin-top':'-'+((popupHeight>>1) + 20)+'px'
+    });
+    $('#mainTitle').css({
+        'width':mainTitleWidth+'px'
+    });
+    $('.babyTabTableTd').css({
+        'width':babyColWidPx+'px'
+    });
+    $('.momTabTableTd').css({
+        'width':momColWidPx+'px'
+    });
+    if(!showCols) {
+        $('#leftcolumnwrap').hide();
+        $('#rightcolumnwrap').hide();
+        $('.menuButton').show();
+        $('#leftcolumnwrap').css({
+            'position':'absolute',
+            'top':'67px',
+            'left':'0',
+            'z-index':'10'
+        });
+        $('#rightcolumnwrap').css({
+            'position':'absolute',
+            'top':'67px',
+            'right':'0',
+            'z-index':'10'
+        });
+        $('#mainTitle').css({
+            'font-size':'32px'
+        });
+    }
+    else {
+        $('#leftcolumnwrap').show();
+        $('#rightcolumnwrap').show();
+        $('.menuButton').hide();
+        leftMenuButtonPressed = false;
+        rightMenuButtonPressed = false;
+        $('#leftMenuButton').attr('src', 'assets/menu0.png');
+        $('#rightMenuButton').attr('src', 'assets/menu0.png');
+        $('#leftcolumnwrap').css({
+            'position':'static'
+        });
+        $('#rightcolumnwrap').css({
+            'position':'static'
+        });
+        $('#mainTitle').css({
+            'font-size':'45px'
+        });
+    }
 }
 
 
