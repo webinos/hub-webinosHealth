@@ -331,7 +331,7 @@ function addBabyTab(tabName, isMine, babyId) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
         //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
-        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd babyTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div id=\''+BITlink+'\' class=\'buttonInnerTab\'>'+babyInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
@@ -696,7 +696,7 @@ function addMomTabs() {
         var link = tabId+'Link';
         htmlCode = '';
         //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
-        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd\'>';
+        htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd momTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'>'+momInnerTabList[i].displayName+'</div>';
         htmlCode += '</td>';
@@ -941,7 +941,17 @@ function windowResize() {
     var popupWidth = $(window).width() - 150;
     var popupHeight = $(window).height() - 110;
     var mainTitleWidth = $(window).width() - 150;
-    //console.log('hw: '+headerWidth+', cw: '+colWidth+', content: '+contentWidth);
+    var babyColWidPx;
+    var momColWidPx;
+    if(showCols) {
+        babyColWidPx = ($(window).width()-(colWidth<<1))/babyInnerTabList.length;
+        momColWidPx = ($(window).width()-(colWidth<<1))/momInnerTabList.length;
+    }
+    else {
+        babyColWidPx = ($(window).width())/babyInnerTabList.length;
+        momColWidPx = ($(window).width())/momInnerTabList.length;
+    }
+
     $('#wrapper').css({
         'width':headerWidth+'px'
     });
@@ -978,6 +988,12 @@ function windowResize() {
     });
     $('#mainTitle').css({
         'width':mainTitleWidth+'px'
+    });
+    $('.babyTabTableTd').css({
+        'width':babyColWidPx+'px'
+    });
+    $('.momTabTableTd').css({
+        'width':momColWidPx+'px'
     });
     if(!showCols) {
         $('#leftcolumnwrap').hide();
