@@ -16,7 +16,7 @@
                 <include name="${src.dir}/**"/>
                 <include name="${assets.dir}/**"/>                
                 <include name="index.html"/> 
-		<include name="config.html"/> 
+		<include name="config.xml"/> 
 		<include name="healthHub.png"/>               
             </fileset> 
         </zip> 
