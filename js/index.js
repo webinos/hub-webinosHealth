@@ -672,8 +672,8 @@ function addMomTabs() {
     htmlCode += '<br><br>';
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Add my baby\' class=\'buttonGeneric\' onclick=\'addMyBabyInfo(-1)\'></td>';
-    htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td></tr>';
-    htmlCode += '<td><input type=\'button\' value=\'Check connection requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
+    htmlCode += '<td><input type=\'button\' value=\'Change my info\' class=\'buttonGeneric\' onclick=\'askMomInfo()\'></td>';
+    htmlCode += '<td><input type=\'button\' value=\'Check requests\' class=\'buttonGeneric\' onclick=\'checkConnReq()\'></td></tr>';
     //htmlCode += '<td><input type=\'button\' value=\'My health\' class=\'buttonGeneric\' onclick=\'momHealth()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '<br><br>';
@@ -923,7 +923,7 @@ function windowResize() {
     var colWidth = 230;
     var contentWidth = headerWidth - (colWidth<<1);
     var showCols = true;
-    if(headerWidth < 700) {
+    if(headerWidth < 700 || ($(window).width() < $(window).height())) {
         colWidth = 170;
         contentWidth = headerWidth;
         showCols = false;
