@@ -325,12 +325,10 @@ function addBabyTab(tabName, isMine, babyId) {
     htmlCode = '';
     htmlCode += '<div class=\'centerDiv\'><table class=\'tabTable\'><tr>';
     $('#'+tabInnerTabs).html(htmlCode);
-    var colWidPer = 100/babyInnerTabList.length;
-    var colWidPx = 540/babyInnerTabList.length;
+    var colWidPx = $(window).width()/babyInnerTabList.length;
     for(var i=0; i<babyInnerTabList.length; i++) {
         var BITlink = babyTabIds[i].tabId+'Link';
         htmlCode = '';
-        //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
         htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd babyTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+babyInnerTabList[i].displayName+'\' id=\''+BITlink+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div id=\''+BITlink+'\' class=\'buttonInnerTab\'>'+babyInnerTabList[i].displayName+'</div>';
@@ -689,13 +687,11 @@ function addMomTabs() {
     htmlCode = '';
     htmlCode += '<table class=\'tabTable\'><tr class=\'tabTableTr\'>';
     $('#momInnerTabs').html(htmlCode);
-    var colWidPer = 100/momInnerTabList.length;
-    var colWidPx = 540/momInnerTabList.length;
+    var colWidPx = $(window).width()/momInnerTabList.length;
     for(var i=0; i<momInnerTabList.length; i++) {
         var tabId = momInnerTabList[i].tabId;
         var link = tabId+'Link';
         htmlCode = '';
-        //htmlCode += '<td width='+colWidPer+'% class=\'tabTableTd\'>';
         htmlCode += '<td width='+colWidPx+'px class=\'tabTableTd momTabTableTd\'>';
         //htmlCode += '<input type=\'button\' value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'><br>';
         htmlCode += '<div value=\''+momInnerTabList[i].displayName+'\' id=\''+link+'\' class=\'buttonInnerTab\'>'+momInnerTabList[i].displayName+'</div>';
