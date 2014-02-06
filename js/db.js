@@ -568,7 +568,7 @@ function retrieveData(index, type, isMom, cbk, rf) {
             retrieveDataType = type;
             retrieveDataRef = rf;
             retrieveDataIsMom = isMom;
-            remotebabyDbColl[index].find({type:type}, retrieveDataFindCbk);
+            remotebabyDbColl[index].find({type:type}, retrieveDataFindCbk, retrieveDataFindCbkErr);
             return;
         //}
     }
@@ -591,7 +591,7 @@ function retrieveData(index, type, isMom, cbk, rf) {
             retrieveDataRef = rf;
             retrieveDataIsMom = isMom;
             //momColl.find({type:type}).toArray(retrieveDataFindCbk);
-            momDbColl.find({type:type}, retrieveDataFindCbk);
+            momDbColl.find({type:type}, retrieveDataFindCbk, retrieveDataFindCbkErr);
             return;
         }
         else if (babyList[index]) {
@@ -603,7 +603,7 @@ function retrieveData(index, type, isMom, cbk, rf) {
             retrieveDataType = type;
             retrieveDataRef = rf;
             retrieveDataIsMom = isMom;
-            mybabyDbColl[index].find({type:type}, retrieveDataFindCbk);
+            mybabyDbColl[index].find({type:type}, retrieveDataFindCbk, retrieveDataFindCbkErr);
             return;
         }
         else {
@@ -649,6 +649,14 @@ function retrieveDataFindCbk(data) {
         tmp(remoteSensorData[retrieveDataIndex][retrieveDataType], retrieveDataRef);
     }
     //alert('retrieveDataFindCbk - 09');
+}
+
+
+function retrieveDataFindCbkErr() {
+    alert('Error: cannot retrieve data');
+    var tmp = retrieveDataCbk;
+    retrieveDataCbk = null;
+    tmp(null);
 }
 
 
