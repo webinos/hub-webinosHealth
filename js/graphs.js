@@ -169,7 +169,7 @@ function graphHandler(isMom) {
 
     graphHandler.prototype.selectService = function (data) {
         //alert('selectService: '+JSON.stringify(data));
-        $('#dialog-content').html('preparing for data acquisition...');
+        $('#dialog-content').html('Connecting to sensor...');
         (function(dt, rf) {
         webinos.discovery.findServices(
             new ServiceType(dt.api),
