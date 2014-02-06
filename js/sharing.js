@@ -57,3 +57,21 @@ function checkConnReq() {
 
 }
 
+
+function shareSensors() {
+    webinos.dashboard
+        .open({
+                module: 'simplifiedpolicyeditor',
+                data: {
+                    apiURI: 'http://webinos.org/api/sensors/*'
+                }
+            }, function(){
+                //alert('done');
+                }
+        )
+        .onAction(function (data) {
+            //alert('action done: '+JSON.stringify(data));
+        });
+
+}
+
