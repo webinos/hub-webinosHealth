@@ -775,6 +775,7 @@ function addMidwifeTabs() {
     htmlCode += '<table>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Connect new baby\' class=\'buttonGeneric\' onclick=\'connectToBaby(null, null)\'></td></tr>';
     htmlCode += '<tr><td><input type=\'button\' value=\'Refresh baby list\' class=\'buttonGeneric\' onclick=\'refreshBabyList()\'></td></tr>';
+    htmlCode += '<tr><td><input type=\'button\' value=\'Share sensor\' class=\'buttonGeneric\' onclick=\'shareSensors()\'></td></tr>';
     htmlCode += '</table>';
     htmlCode += '</div>';
     $('#target').append(htmlCode);
