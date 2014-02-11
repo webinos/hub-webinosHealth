@@ -54,7 +54,10 @@ var remotebabyDbService = null;
 var remotebabyDbColl = null;
 
 
-dbInit();
+$(document).ready(function() {
+    dbInit();
+});
+
 
 function createDbService(dbName, cbk) {
     var pars =  [{

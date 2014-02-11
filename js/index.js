@@ -25,15 +25,17 @@ var babyList = new Array();    //Midwife
 var mybabyList = new Array();    //Mom
 
 
-try {
-    googleAvailable = false;
-    setTimeout('gl()', 100);
-    google.load('visualization', '1', {'packages': ['corechart'], 'callback': googleLoaded});
-}
-catch(e) {
-    alert('google load error: '+e.message);
-    //gl();
-}
+$(document).ready(function(){
+    try {
+        googleAvailable = false;
+        setTimeout('gl()', 1500);
+        google.load('visualization', '1', {'packages': ['corechart'], 'callback': googleLoaded});
+    }
+    catch(e) {
+        console.log('google load error: '+e.message);
+        //gl();
+    }
+});
 
 
 function googleLoaded() {
