@@ -72,9 +72,11 @@ function graphHandler(isMom) {
             this.description = 'baby o2 saturation';
             this.serviceUri = 'http://webinos.org/api/sensors/oximeter';
         }
-        htmlCode += '<td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td>';
+        //htmlCode += '<td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td>';
+        htmlCode += '<td><div class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'>Show data</div></td>';
         if(showAcquire) {
-            htmlCode += '<td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td>';
+            //htmlCode += '<td><input type=\'button\' value=\'Acquire data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'></td>';
+            htmlCode += '<td><div class=\'buttonGeneric\' id=\''+this.mainDiv+'AcquireButton\'>Acquire data</div></td>';
         }
         htmlCode += '</tr></table>';
         $('#'+this.mainDiv).html(htmlCode);
@@ -213,7 +215,8 @@ function graphHandler(isMom) {
         htmlCode += '<option value=\'60\'>60 s</option>';
         htmlCode += '<option value=\'120\'>120 s</option>';
         htmlCode += '</select></td></tr>';
-        htmlCode += '<tr><td><input type=\'button\' value=\'Go\' class=\'buttonGeneric\' id=\''+this.mainDiv+'StartAcquisition\'></td></tr>';
+        //htmlCode += '<tr><td><input type=\'button\' value=\'Go\' class=\'buttonGeneric\' id=\''+this.mainDiv+'StartAcquisition\'></td></tr>';
+        htmlCode += '<tr><td><div class=\'buttonGeneric\' id=\''+this.mainDiv+'StartAcquisition\'>Go</div></td></tr>';
         htmlCode += '</table>';
         $('#dialog-content').html(htmlCode);
         (function(mDiv, rf) {

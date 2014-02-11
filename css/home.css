@@ -188,6 +188,7 @@ th {
 #dialog-content {
     height: 100%;
     overflow: auto;
+    text-align: center;
 }
 
 /* css for left tabs */
@@ -208,11 +209,23 @@ th {
     background: #202020;
     color: #D0D0D0;
     cursor: pointer;
+    /*height: 20px;*/
+    border-radius: 3px;
+    border: 1px solid #909090;
+    height: 18px;
+    text-align: center;
+    padding-top: 5px;
 }
 
 .buttonInnerTabSelected {
-    background: #909090;
+    background: #707070;
     color: #202020;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid #808080;
+    height: 18px;
+    text-align: center;
+    padding-top: 5px;
 }
 
 
@@ -221,6 +234,12 @@ th {
     background: #D0D0D0;
     color: #202020;
     cursor: pointer;
+    width: 150px;
+    height: 18px;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 3px;
+    /*border: 1px solid #456;*/
 }
 
 
@@ -258,6 +277,7 @@ td {
     padding-top: 4px;
     padding-bottom: 4px;
     text-align: center;
+    /*height: 20px;*/
 }
 
 .centerDiv {
@@ -267,6 +287,14 @@ td {
 
 .menuButton {
     height: 40px;
+}
+
+
+.innerTabGraphClass {
+    height: 100px;
+    background: rgba(48,48,48,0.5);
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 
