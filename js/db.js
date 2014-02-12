@@ -54,7 +54,10 @@ var remotebabyDbService = null;
 var remotebabyDbColl = null;
 
 
-dbInit();
+$(document).ready(function() {
+    dbInit();
+});
+
 
 function createDbService(dbName, cbk) {
     var pars =  [{
@@ -498,12 +501,12 @@ function storeMomInfo(mi, cbk) {
 
 function storeData(index, type, timestamp, sensorValues, cbk) {
     //TODO Store acquired data in the correct db
-    //alert('Storing data for baby '+index);
+    //console.log('Storing data for baby '+index);
     //alert('Storing data for baby '+index+' and sensor '+sensorType+': '+timestamp.toDateString()+' - '+sensorValues[0]);
 
     if(storeDataCbk) {
         //A store data is in progress - return
-        alert('error - store in progress');
+        console.log('error - store in progress');
         cbk(null);
         return;
     }
@@ -534,7 +537,7 @@ function storeData(index, type, timestamp, sensorValues, cbk) {
         mybabyDbColl[index].insert({ts: timestamp, val: sensorValues[0], type: type});
     }
     //alert('Storing data end');
-
+    cbk(null);
 }
 
 
