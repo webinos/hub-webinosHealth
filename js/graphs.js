@@ -38,16 +38,16 @@ function graphHandler(isMom) {
         this.sensorType = type;
         this.availableSensors = new Array();
         var htmlCode = '';
-        htmlCode += '<br><table><tr>';
+        htmlCode += '<br><table class=\'centerTable\'><tr>';
         if(type == 0) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
             this.description = 'mom blood pressure';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodpressure';
         }
         else if(type == 1) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
             this.description = 'mom blood sugar';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodsugar';
         }
@@ -65,7 +65,7 @@ function graphHandler(isMom) {
         }
         else if(type == 10) {
             //htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
             this.description = 'baby weight';
             this.serviceUri = 'http://webinos.org/api/sensors/weightscale';
         }
@@ -76,7 +76,7 @@ function graphHandler(isMom) {
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
         else if(type == 12) {
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
             this.description = 'baby o2 saturation';
             this.serviceUri = 'http://webinos.org/api/sensors/oximeter';
         }

@@ -304,3 +304,9 @@ td {
     height: 60px;
 }
 
+
+.centerTable {
+    width: 200px;
+    margin: 10px auto;
+}
+
