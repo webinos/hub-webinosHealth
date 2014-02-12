@@ -123,7 +123,7 @@ function dbInit() {
                 }
             }
         },
-        1000,
+        2000,
         {zone: 1, name: '__whh__list__'}
     );
 }
