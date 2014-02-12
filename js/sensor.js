@@ -46,7 +46,7 @@ getNewSensorData = function(ref) {
 
 
 configureSuccess = function() {
-    //alert('configure success');
+    console.log('sensor configure success');
     var htmlCode = '';
     htmlCode += 'Data acquisition...';
     $('#dialog-content').html(htmlCode);
@@ -59,7 +59,7 @@ configureSuccess = function() {
 
 
 configureError = function() {
-    alert('configure error');
+    console.log('sensor configure error');
     var htmlCode = '';
     htmlCode += 'Sorry, error in data acquisition...';
     $('#dialog-content').html(htmlCode);
@@ -67,7 +67,7 @@ configureError = function() {
 
 
 dataAcquired = function (event) {
-    //alert('Data acquired for '+event.sensorId);
+    console.log('Data acquired for '+event.sensorId);
     graphRef[event.sensorId].saveData(event);
     if(graphRef[event.sensorId].acquisitionMode == 0) {
         graphRef[event.sensorId].acquisitionInProgress = false;
@@ -78,7 +78,7 @@ dataAcquired = function (event) {
 
 
 stopDataAcquisition = function(ref) {
-    //alert('stop data acquisition');
+    console.log('Stop data acquisition');
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].acquisitionInProgress = false;
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].stopButtonOff();
     graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensors4Choice[graphRef[ref.sensors4Choice[ref.sensorSelected].id].sensorSelected].removeEventListener('sensor', dataAcquired, false);

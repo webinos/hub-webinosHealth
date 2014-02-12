@@ -37,41 +37,50 @@ function graphHandler(isMom) {
         this.type = type;
         this.sensorType = type;
         this.availableSensors = new Array();
-        var htmlCode = '<br><table><tr>';
+        var htmlCode = '';
+        htmlCode += '<br><table><tr>';
         if(type == 0) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
             this.description = 'mom blood pressure';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodpressure';
         }
         else if(type == 1) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
             this.description = 'mom blood sugar';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodsugar';
         }
         else if(type == 2) {
             //htmlCode += '<tr><td>Div for showing graph with mom heartrate</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
             this.description = 'mom heartrate';
             this.serviceUri = 'http://webinos.org/api/sensors/heartratemonitor';
         }
         else if(type == 3) {
             //htmlCode += '<tr><td>Div for showing graph with mom temperature</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/temperature-icon.png\'></img></td>';
             this.description = 'mom temperature';
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
         else if(type == 10) {
             //htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
             this.description = 'baby weight';
             this.serviceUri = 'http://webinos.org/api/sensors/weightscale';
         }
         else if(type == 11) {
             //htmlCode += '<tr><td>Div for showing graph with baby temperature</td></tr>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/temperature-icon.png\'></img></td>';
             this.description = 'baby temperature';
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
         else if(type == 12) {
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/heartratemonitor-icon.png\'></img></td>';
             this.description = 'baby o2 saturation';
             this.serviceUri = 'http://webinos.org/api/sensors/oximeter';
         }
+        //htmlCode += '<table><tr>';
         //htmlCode += '<td><input type=\'button\' value=\'Show data\' class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'></td>';
         htmlCode += '<td><div class=\'buttonGeneric\' id=\''+this.mainDiv+'ShowButton\'>Show data</div></td>';
         if(showAcquire) {
@@ -271,7 +280,7 @@ function graphHandler(isMom) {
 */
 
     graphHandler.prototype.saveData = function(event) {
-        //alert('saveData - '+this.sensors4Choice[this.sensorSelected].description);
+        console.log('graph saveData - '+this.sensors4Choice[this.sensorSelected].description);
         //alert(JSON.stringify(event));
         var time=new Date(event.timestamp);
         if(this.acquisitionMode == 0) {
@@ -291,6 +300,7 @@ function graphHandler(isMom) {
         //}
         (function(ev, rf) {
             storeData(rf.index, rf.type, time, ev.sensorValues, function(){
+                console.log('Stored data - showing is '+rf.showingData);
                 if(rf.showingData) {
                     rf.showGraph();
                 }
@@ -383,7 +393,8 @@ function graphHandler(isMom) {
 
 
     graphHandler.prototype.stopButtonOn = function() {
-        $('#'+this.mainDiv+'AcquireButton').val('Stop data acquisition');
+        console.log('graph stopButtonOn');
+        $('#'+this.mainDiv+'AcquireButton').html('Stop data acquisition');
         (function(mDiv, rf) {
             $('#'+mDiv+'AcquireButton').click(function() {
                 stopDataAcquisition(rf);
@@ -393,7 +404,8 @@ function graphHandler(isMom) {
 
 
     graphHandler.prototype.stopButtonOff = function() {
-        $('#'+this.mainDiv+'AcquireButton').val('Acquire data');
+        console.log('graph stopButtonOff');
+        $('#'+this.mainDiv+'AcquireButton').html('Acquire data');
         (function(mDiv, rf) {
             $('#'+mDiv+'AcquireButton').click(function() {
                 rf.dataAcquisition();
