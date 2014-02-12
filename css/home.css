@@ -292,8 +292,8 @@ td {
 
 
 .innerTabGraphClass {
-    height: 100px;
-    background: rgba(48,48,48,0.5);
+    height: 120px;
+    background: rgba(48,48,48,0.6);
     padding-left: 8px;
     padding-right: 8px;
     text-align: center;

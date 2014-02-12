@@ -41,13 +41,13 @@ function graphHandler(isMom) {
         htmlCode += '<br><table class=\'centerTable\'><tr>';
         if(type == 0) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood pressure</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/bloodpressure-icon.png\'></img></td>';
             this.description = 'mom blood pressure';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodpressure';
         }
         else if(type == 1) {
             //htmlCode += '<tr><td>Div for showing graph with mom blood sugar</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/bloodsugar-icon.png\'></img></td>';
             this.description = 'mom blood sugar';
             this.serviceUri = 'http://webinos.org/api/sensors/bloodsugar';
         }
@@ -65,7 +65,7 @@ function graphHandler(isMom) {
         }
         else if(type == 10) {
             //htmlCode += '<tr><td>Div for showing graph with baby weight</td></tr>';
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/weightscale-icon.png\'></img></td>';
             this.description = 'baby weight';
             this.serviceUri = 'http://webinos.org/api/sensors/weightscale';
         }
@@ -76,7 +76,7 @@ function graphHandler(isMom) {
             this.serviceUri = 'http://webinos.org/api/sensors/temperature';
         }
         else if(type == 12) {
-            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/empty-icon.png\'></img></td>';
+            htmlCode += '<td><img class=\'healthIcon\' src=\'./assets/images/oximeter-icon.png\'></img></td>';
             this.description = 'baby o2 saturation';
             this.serviceUri = 'http://webinos.org/api/sensors/oximeter';
         }
@@ -356,12 +356,14 @@ function graphHandler(isMom) {
 
 
     graphHandler.prototype.showGraph = function() {
-        //alert('showGraph - 01');
+        console.log('showGraph - 01');
         var startDate = new Date($('#graphStartDate').val());
         var endDate = new Date($('#graphEndDate').val());
         var viewType = $('#graphViewType').val();
+        console.log('showGraph - 013');
         var data = graphFilter(this.historicData, startDate, endDate);
         //alert('showGraph - 01 - filter data len is '+data.timestamp.length);
+        console.log('showGraph - 02');
         var htmlCode = '';
         if(viewType == 0) {
             //alert('showGraph - 03');
@@ -375,8 +377,11 @@ function graphHandler(isMom) {
         }
         else if(viewType == 1) {
             var cdiv = $('#dialog-content-graph').get(0);
+            //console.log('showGraph - 04 - div height is '+$('#dialog-content').height());
+            var chartHeight = $('#dialog-content').height() - 130;
             var chart = new google.visualization.LineChart(cdiv);
-            var go = {};
+            var go = { height: chartHeight };
+            //var go = { explorer: {} };
             var gd = new google.visualization.DataTable();
             gd.addColumn('date', 'Date');
             gd.addColumn('number', 'Value');
@@ -417,7 +422,7 @@ function graphHandler(isMom) {
 
 
 function graphFilter(data, startDate, endDate) {
-    //alert('graphFilter - data len is '+data.timestamp.length);
+    console.log('graphFilter - 01');
     var sd = startDate;
     var ed = endDate;
     if(!isValidDate(startDate)) {
@@ -426,16 +431,20 @@ function graphFilter(data, startDate, endDate) {
     if(!isValidDate(endDate)) {
         ed = new Date(4000, 11, 31);
     }
+    console.log('graphFilter - 03');
     var result = {};
     result.timestamp = new Array();
     result.values = new Array();
+    if(data) {
     for(var i=0; i<data.timestamp.length; i++) {
         //alert('graphFilter - check data '+i+', sd is '+sd+', ed is '+ed+', ts is '+data.timestamp[i]);
+        console.log('graphFilter - 05');
         if(data.timestamp[i] >= sd && data.timestamp[i] <= ed) {
             //alert('graphFilter - add data '+i);
             result.timestamp.push(data.timestamp[i]);
             result.values.push(data.values[i]);
         }
+    }
     }
     //alert('graphFilter - result len is '+result.timestamp.length);
     return result;
